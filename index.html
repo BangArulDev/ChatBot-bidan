@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Bidan - Mual Muntah Kehamilan</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Menggunakan font Inter */
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      /* Style untuk scrollbar yang lebih tipis di area chat */
+      .chat-area::-webkit-scrollbar {
+        width: 4px;
+      }
+      .chat-area::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1; /* slate-300 */
+        border-radius: 20px;
+      }
+      /* Style untuk gelembung chat pengguna */
+      .user-bubble {
+        background-color: #fef3c7; /* amber-100 */
+        color: #78350f; /* amber-900 */
+      }
+      /* Style untuk gelembung chat bot */
+      .bot-bubble {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-200 flex items-center justify-center min-h-screen">
+    <!-- Kontainer utama menyerupai ponsel -->
+    <div
+      class="w-full max-w-md bg-white shadow-lg overflow-hidden flex flex-col"
+      style="height: 812px; /* Perkiraan tinggi iPhone X/11 */"
+    >
+      <!-- 1. Header -->
+      <header class="bg-white shadow-sm z-10">
+        <!-- Baris status (opsional, untuk tampilan ponsel) -->
+        <div
+          class="flex justify-between items-center px-4 pt-4 pb-2 text-sm text-gray-700"
+        >
+          <span>19.43</span>
+          <div class="flex items-center space-x-1">
+            <!-- Ikon status sederhana -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+              />
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 15a4 4 0 004 4h9a5 5 0 005-5h.5a1.5 1.5 0 000-3H15a5 5 0 00-5-5H4a4 4 0 00-4 4v3z"
+              />
+            </svg>
+            <span>43%</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 7a2 2 0 012 2v10a2 2 0 01-2 2h-3a2 2 0 01-2-2V9a2 2 0 012-2h3zM5 11h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 012-2z"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Header Navigasi -->
+        <div
+          class="flex items-center justify-between px-3 py-2 border-b border-gray-100"
+        >
+          <!-- Kiri: Panah kembali & Info Toko -->
+          <div class="flex items-center space-x-2">
+            <!-- Ikon Panah Kembali -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-gray-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+
+            <!-- Logo Toko -->
+            <div
+              class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-500 font-bold text-xl"
+            >
+              B
+            </div>
+
+            <!-- Info Toko -->
+            <div>
+              <h1 class="font-bold text-gray-900 text-base">
+                Bidan Sinta - Info Bumil
+              </h1>
+              <p class="text-xs text-gray-500">
+                Biasanya merespons dalam beberapa d...
+              </p>
+            </div>
+          </div>
+
+          <!-- Kanan: Ikon -->
+          <div class="flex items-center space-x-3 text-gray-700">
+            <!-- Ikon Toko/Keranjang -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <!-- Ikon Opsi Lain -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+              />
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- 2. Area Chat -->
+      <main
+        id="chat-area-main"
+        class="flex-1 overflow-y-auto bg-gray-100 p-4 space-y-4 chat-area"
+      >
+        <!-- Pesan Selamat Datang -->
+        <div class="flex items-start space-x-2">
+          <!-- Ikon Bot -->
+          <div
+            class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 flex-shrink-0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <!-- Gelembung Chat -->
+          <div
+            class="bg-white rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm bot-bubble"
+          >
+            <p class="text-sm text-gray-800">
+              Halo, selamat datang di layanan konsultasi kehamilan. Ada yang
+              bisa saya bantu terkait mual dan muntah di trimester pertama?
+            </p>
+          </div>
+        </div>
+
+        <!-- Pesan Produk -->
+        <!-- Bagian ini dihapus karena tidak relevan dengan tema kesehatan -->
+
+        <!-- Label Chatbot -->
+        <div class="text-center">
+          <span class="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-full"
+            >Dikirim oleh chatbot</span
+          >
+        </div>
+
+        <!-- Kartu Opsi Cepat -->
+        <div class="flex justify-center">
+          <div class="bg-white rounded-lg shadow-lg p-4 w-full max-w-sm">
+            <h2 class="font-bold text-gray-900 mb-3">
+              Ada yang bisa kami bantu hari ini?
+            </h2>
+            <ul class="divide-y divide-gray-100">
+              <!-- Opsi 1 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Bagaimana cara mengatasi mual?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+              <!-- Opsi 2 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Makanan apa yang aman dikonsumsi?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+              <!-- Opsi 3 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Kapan mual muntah ini akan berhenti?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+              <!-- Opsi 4 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Apakah ini berbahaya untuk janin saya?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+              <!-- Opsi 5 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Obat apa yang boleh diminum?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </main>
+
+      <!-- 3. Footer / Input Area -->
+      <footer class="bg-white border-t border-gray-100 p-3">
+        <!-- Tombol Aksi Cepat -->
+        <div class="flex items-center space-x-2 mb-3">
+          <button
+            class="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center space-x-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span>Buat Janji Temu</span>
+          </button>
+          <button
+            class="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center space-x-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h6m-3-4h3"
+              />
+            </svg>
+            <span>Artikel Kesehatan</span>
+          </button>
+        </div>
+
+        <!-- Input Pesan -->
+        <div class="flex items-center space-x-2">
+          <button class="text-gray-500 p-2 rounded-full hover:bg-gray-100">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </button>
+
+          <div class="flex-1 relative">
+            <input
+              type="text"
+              id="chat-input"
+              placeholder="Kirim pesan..."
+              class="w-full bg-gray-100 rounded-full py-2.5 px-4 pr-20 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
+              onkeyup="toggleSendButton()"
+            />
+
+            <!-- Tombol ✨ Magic Write -->
+            <button
+              id="magic-write-btn"
+              onclick="handleMagicWrite()"
+              title="✨ Bantu saya tulis pesan"
+              class="absolute right-10 top-1/2 -translate-y-1/2 text-gray-500 p-1.5 rounded-full hover:bg-gray-200"
+            >
+              <span class="text-lg">✨</span>
+            </button>
+
+            <!-- Tombol Kirim -->
+            <button
+              id="send-btn"
+              onclick="handleSendClick()"
+              class="absolute right-2 top-1/2 -translate-y-1/2 text-orange-500 p-1.5 rounded-full hover:bg-orange-100 disabled:text-gray-300 disabled:hover:bg-transparent"
+              disabled
+            >
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  d="M3.105 3.106a.75.75 0 01.884-.04l14 7a.75.75 0 010 1.372l-14 7A.75.75 0 013 17.75V3.75a.75.75 0 01.105-.344z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Modal untuk Loading/Error -->
+    <div
+      id="loading-modal"
+      class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
+    >
+      <div
+        class="bg-white rounded-lg p-6 shadow-xl flex items-center space-x-4"
+      >
+        <!-- Spinner -->
+        <svg
+          class="animate-spin h-6 w-6 text-orange-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        <span id="modal-text" class="text-gray-700">Memproses...</span>
+      </div>
+    </div>
+
+    <script>
+      // --- Pengaturan API Gemini ---
+      const apiKey = "AIzaSyBP7tm5iqJCUlfNj9rSDOYWhOSMhy08zwQ"; // Dibiarkan kosong, akan ditangani oleh lingkungan
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+      // --- Elemen DOM ---
+      const chatArea = document.getElementById("chat-area-main");
+      const chatInput = document.getElementById("chat-input");
+      const sendButton = document.getElementById("send-btn");
+      const magicWriteButton = document.getElementById("magic-write-btn");
+      const modal = document.getElementById("loading-modal");
+      const modalText = document.getElementById("modal-text");
+
+      // --- System Prompts ---
+      const botSystemPrompt = {
+        parts: [
+          {
+            text: "Anda adalah 'Bidan Sinta', asisten kesehatan virtual yang ramah dan informatif, khusus membantu ibu hamil trimester pertama. Jawab pertanyaan pengguna tentang mual dan muntah (morning sickness) dengan singkat (1-2 kalimat), empatik, dan akurat secara medis dalam Bahasa Indonesia. Selalu ingatkan bahwa Anda bukan pengganti dokter dan sarankan untuk berkonsultasi dengan dokter atau bidan jika gejala parah.",
+          },
+        ],
+      };
+
+      const magicWriteSystemPrompt = {
+        parts: [
+          {
+            text: "Anda adalah asisten penulis. Ambil kata kunci berikut dari pengguna dan ubah menjadi pertanyaan yang sopan dan jelas untuk asisten kesehatan kehamilan, dalam Bahasa Indonesia. Jawab HANYA dengan pertanyaan yang telah direvisi, tanpa sapaan atau penutup tambahan. Contoh: 'mual parah' menjadi 'Halo, saya mengalami mual yang cukup parah akhir-akhir ini. Apakah ada yang bisa saya lakukan untuk menguranginya?'",
+          },
+        ],
+      };
+
+      // --- Fungsi Modal ---
+      function showModal(message) {
+        modalText.textContent = message;
+        modal.classList.remove("hidden");
+      }
+
+      function hideModal() {
+        modal.classList.add("hidden");
+      }
+
+      // --- Fungsi Panggilan API ---
+      async function fetchWithBackoff(payload, maxRetries = 3) {
+        let delay = 1000; // 1 detik
+        for (let i = 0; i < maxRetries; i++) {
+          try {
+            const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (text) {
+              return text;
+            } else {
+              throw new Error("Respon API tidak valid atau kosong.");
+            }
+          } catch (error) {
+            console.error(`Percobaan ${i + 1} gagal:`, error.message);
+            if (i === maxRetries - 1) {
+              throw error; // Gagal setelah semua percobaan
+            }
+            await new Promise((resolve) => setTimeout(resolve, delay));
+            delay *= 2; // Exponential backoff
+          }
+        }
+      }
+
+      // --- Fungsi Logika Chat ---
+
+      // Menangani klik tombol kirim
+      function handleSendClick() {
+        const messageText = chatInput.value.trim();
+        handleSendMessage(messageText);
+      }
+
+      // Menangani klik pada balasan cepat
+      function handleQuickReply(element) {
+        const messageText = element.querySelector("span").textContent.trim();
+        handleSendMessage(messageText);
+      }
+
+      // Fungsi utama untuk mengirim pesan
+      function handleSendMessage(messageText) {
+        if (!messageText) return;
+
+        addMessageToChat("user", messageText);
+        chatInput.value = "";
+        toggleSendButton();
+        toggleTypingIndicator(true);
+
+        getBotReply(messageText);
+      }
+
+      // Mendapatkan balasan dari bot Gemini
+      async function getBotReply(userMessage) {
+        const payload = {
+          contents: [{ parts: [{ text: userMessage }] }],
+          systemInstruction: botSystemPrompt,
+        };
+
+        try {
+          const botResponse = await fetchWithBackoff(payload);
+          addMessageToChat("bot", botResponse);
+        } catch (error) {
+          console.error("Gagal mendapatkan balasan bot:", error);
+          addMessageToChat(
+            "bot",
+            "Maaf, terjadi kesalahan. Staf kami akan segera membantu Anda."
+          );
+        } finally {
+          toggleTypingIndicator(false);
+        }
+      }
+
+      // Menangani klik tombol ✨ Magic Write
+      async function handleMagicWrite() {
+        const userKeywords = chatInput.value.trim();
+        if (!userKeywords) {
+          showModal("Silakan masukkan kata kunci di kolom pesan.");
+          setTimeout(hideModal, 2000);
+          return;
+        }
+
+        showModal("✨ Sedang menulis draf...");
+        magicWriteButton.disabled = true;
+
+        const payload = {
+          contents: [{ parts: [{ text: userKeywords }] }],
+          systemInstruction: magicWriteSystemPrompt,
+        };
+
+        try {
+          const magicResponse = await fetchWithBackoff(payload);
+          chatInput.value = magicResponse;
+          toggleSendButton(); // Aktifkan tombol kirim karena input sekarang terisi
+        } catch (error) {
+          console.error("Gagal mendapatkan draf Magic Write:", error);
+          showModal("Maaf, terjadi kesalahan saat membuat draf.");
+          setTimeout(hideModal, 2000);
+        } finally {
+          hideModal();
+          magicWriteButton.disabled = false;
+        }
+      }
+
+      // --- Fungsi Bantuan UI ---
+
+      // Menambah gelembung pesan baru ke area chat
+      function addMessageToChat(sender, text) {
+        const bubble = document.createElement("div");
+        bubble.className = "flex w-full";
+
+        let bubbleContent;
+        if (sender === "user") {
+          bubble.classList.add("justify-end");
+          bubbleContent = `
+                    <div class="rounded-lg rounded-tr-none p-3 max-w-xs shadow-sm user-bubble">
+                        <p class="text-sm">${text}</p>
+                    </div>
+                `;
+        } else {
+          // 'bot'
+          bubble.classList.add("justify-start", "items-start", "space-x-2");
+          bubbleContent = `
+                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg>
+                    </div>
+                    <div class="bg-white rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm bot-bubble">
+                        <p class="text-sm text-gray-800">${text.replace(
+                          /\n/g,
+                          "<br>"
+                        )}</p>
+                    </div>
+                `;
+        }
+
+        bubble.innerHTML = bubbleContent;
+        chatArea.appendChild(bubble);
+        scrollToBottom();
+      }
+
+      // Menampilkan/menyembunyikan indikator "mengetik"
+      function toggleTypingIndicator(show) {
+        let typingBubble = document.getElementById("typing-indicator");
+        if (show) {
+          if (!typingBubble) {
+            typingBubble = document.createElement("div");
+            typingBubble.id = "typing-indicator";
+            typingBubble.className = "flex items-start space-x-2";
+            typingBubble.innerHTML = `
+                        <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg>
+                        </div>
+                        <div class="bg-white rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm bot-bubble">
+                            <div class="flex space-x-1">
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                            </div>
+                        </div>
+                    `;
+            chatArea.appendChild(typingBubble);
+            scrollToBottom();
+          }
+        } else {
+          if (typingBubble) {
+            typingBubble.remove();
+          }
+        }
+      }
+
+      // Otomatis scroll ke bawah
+      function scrollToBottom() {
+        chatArea.scrollTop = chatArea.scrollHeight;
+      }
+
+      // Mengaktifkan/menonaktifkan tombol kirim berdasarkan input
+      function toggleSendButton() {
+        sendButton.disabled = chatInput.value.trim() === "";
+      }
+
+      // Menangani 'Enter' di input
+      chatInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          handleSendClick();
+        }
+      });
+    </script>
+  </body>
+</html>
