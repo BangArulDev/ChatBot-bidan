@@ -1,0 +1,314 @@
+[
+  {
+    "id": 1761807297706,
+    "sender": "user",
+    "text": "covb",
+    "time": "13:54"
+  },
+  {
+    "id": 1761807301514,
+    "sender": "bot",
+    "text": "Halo, saya Bidan Sinta. Tampaknya ada kesalahan ketik; silakan tanyakan pada saya tentang mual atau muntah yang Anda rasakan selama trimester pertama kehamilan.\n\nIngat, saya bukan pengganti dokter. Jika gejala Anda sangat parah, segera konsultasikan dengan dokter atau bidan Anda.",
+    "time": "13:55"
+  },
+  {
+    "id": 1761818482727,
+    "sender": "user",
+    "text": "Bagaimana cara mengatasi mual?",
+    "time": "17:01"
+  },
+  {
+    "id": 1761818489822,
+    "sender": "bot",
+    "text": "Mual memang tidak nyaman, Bu. Coba siasati dengan makan porsi kecil tapi sering dan konsumsi makanan hambar seperti biskuit kering atau teh jahe hangat.\n\n**Ingat**, jika mual dan muntah sangat parah hingga Ibu tidak bisa minum atau makan sama sekali, segera konsultasikan ke dokter atau bidan Anda ya.",
+    "time": "17:01"
+  },
+  {
+    "id": 1761818528734,
+    "sender": "user",
+    "text": "Kapan mual muntah ini akan berhenti?",
+    "time": "17:02"
+  },
+  {
+    "id": 1761818533140,
+    "sender": "bot",
+    "text": "Halo, Ibu. Saya mengerti betul rasa tidak nyamannya; umumnya, mual dan muntah (morning sickness) akan mulai mereda dan hilang setelah memasuki trimester kedua, yaitu sekitar minggu ke-12 hingga ke-14 kehamilan. Namun, ingat ya Bu, saya bukan pengganti dokter; jika mual dan muntah sangat parah hingga Ibu sulit makan atau minum, segera konsultasi dengan dokter atau bidan Anda.",
+    "time": "17:02"
+  },
+  {
+    "id": 1761818683432,
+    "sender": "user",
+    "text": "Saya sering mengalami mual dan muntah. Apakah ini kondisi yang normal selama kehamilan, dan tips apa yang bisa saya lakukan untuk membantu menguranginya?",
+    "time": "17:04"
+  },
+  {
+    "id": 1761818687453,
+    "sender": "bot",
+    "text": "Salam hangat, Bunda. Saya Bidan Sinta.\n\nYa, mual dan muntah (*morning sickness*) sangat umum terjadi pada trimester pertama karena peningkatan hormon kehamilan. Untuk membantu menguranginya, cobalah makan dalam porsi kecil tetapi sering, dan konsumsi makanan kering seperti biskuit sebelum bangun tidur.\n\nIngat ya, saya bukan pengganti dokter. Jika mual dan muntah Anda sangat parah hingga menyebabkan dehidrasi atau sulit minum/makan, segera konsultasikan dengan dokter atau bidan Anda.",
+    "time": "17:04"
+  },
+  {
+    "id": 1761819276137,
+    "sender": "user",
+    "text": "Kapan mual muntah ini akan berhenti?",
+    "time": "17:14"
+  },
+  {
+    "id": 1761819281394,
+    "sender": "bot",
+    "text": "Saya mengerti ini sangat tidak nyaman, Bu. Biasanya, mual dan muntah (morning sickness) mulai mereda setelah trimester pertama, yakni sekitar minggu ke-12 hingga ke-14 kehamilan.\n\nJika mual dan muntah Anda sangat parah hingga Anda kesulitan makan atau minum, tolong **segera konsultasikan dengan dokter atau bidan Anda** karena saya bukan pengganti saran medis profesional.",
+    "time": "17:14"
+  },
+  {
+    "id": 1761819682349,
+    "sender": "user",
+    "text": "Obat apa yang boleh diminum?",
+    "time": "17:21"
+  },
+  {
+    "id": 1761819687551,
+    "sender": "bot",
+    "text": "Saya mengerti rasa mual ini sangat mengganggu, Bu. Untuk penanganan awal, suplemen Vitamin B6 (Pyridoxine) sering kali direkomendasikan dan dianggap aman untuk membantu mengurangi mual.\n\nNamun, saya bukan pengganti dokter; selalu konsultasikan jenis obat dan dosis yang tepat dengan dokter atau bidan Anda, terutama jika gejala mual dan muntah Anda tergolong parah.",
+    "time": "17:21"
+  },
+  {
+    "id": 1761819690763,
+    "sender": "user",
+    "text": "Obat apa yang boleh diminum?",
+    "time": "17:21"
+  },
+  {
+    "id": 1761819695016,
+    "sender": "bot",
+    "text": "Saya mengerti ketidaknyamanan Anda. Walaupun Vitamin B6 (Pyridoxine) sering disarankan sebagai pilihan awal untuk mual, **sangat penting** Anda berkonsultasi dengan dokter atau bidan Anda terlebih dahulu sebelum mengonsumsi obat apa pun.",
+    "time": "17:21"
+  },
+  {
+    "id": 1772695530969,
+    "sender": "user",
+    "text": "Bagaimana cara mengatasi mual?",
+    "time": "14:25"
+  },
+  {
+    "id": 1772695538006,
+    "sender": "bot",
+    "text": "Maaf, terjadi kesalahan. Staf kami akan segera membantu Anda.",
+    "time": "14:25"
+  },
+  {
+    "id": 1772695549860,
+    "sender": "user",
+    "text": "Bagaimana cara mengatasi mual?",
+    "time": "14:25"
+  },
+  {
+    "id": 1772695554344,
+    "sender": "bot",
+    "text": "Maaf, terjadi kesalahan. Staf kami akan segera membantu Anda.",
+    "time": "14:25"
+  },
+  {
+    "id": 1772695599870,
+    "sender": "user",
+    "text": "Kapan mual muntah ini akan berhenti?",
+    "time": "14:26"
+  },
+  {
+    "id": 1772695605696,
+    "sender": "bot",
+    "text": "Maaf, terjadi kesalahan. Staf kami akan segera membantu Anda.",
+    "time": "14:26"
+  },
+  {
+    "id": 1772696253352,
+    "sender": "user",
+    "text": "Bagaimana cara mengatasi mual?",
+    "time": "14:37"
+  },
+  {
+    "id": 1772696261980,
+    "sender": "bot",
+    "text": "Maaf, terjadi kesalahan. Staf kami akan segera membantu Anda.",
+    "time": "14:37"
+  },
+  {
+    "id": 1772696827613,
+    "sender": "user",
+    "text": "Bagaimana cara mengatasi mual?",
+    "time": "14:47"
+  },
+  {
+    "id": 1772696829678,
+    "sender": "bot",
+    "text": "Selamat datang, saya Bidan Sinta! Mual atau morning sickness adalah gejala umum yang dialami oleh banyak ibu hamil terutama pada trimester pertama. Untuk mengatasi mual, kamu bisa mencoba beberapa hal seperti mengonsumsi makanan ringan dan sering makan, minum air putih cukup, dan hindari makanan yang berbau tajam atau pedas. Jika gejalanya parah atau berlangsung terus-menerus, sebaiknya kamu berkonsultasi dengan dokter atau bidan untuk penawaran terbaik.",
+    "time": "14:47"
+  },
+  {
+    "id": 1772696848942,
+    "sender": "user",
+    "text": "Saya mengalami pusing yang cukup menyiksa. Bagaimana cara untuk mengurangi gejala pusing ini selama saya hamil?",
+    "time": "14:47"
+  },
+  {
+    "id": 1772696849820,
+    "sender": "bot",
+    "text": "Pusing atau gejala morning sickness yang umum dialami oleh ibu hamil pada trimester pertama bisa memang menyakitkan. Salah satu cara efektif untuk mengurangi gejala pusing ini adalah dengan menjaga nutrisi tubuh dengan makanan ringan dan sering, serta berhenti makan sebelum perut Anda terasa lapar karena ini bisa memperburuk pusing.\n\nMohon untuk selalu berkonsultasi dengan dokter atau bidan jika gejala pusing Anda parah atau berlanjut, karena bisa jadi memiliki penyakit lain atau membutuhkan perawatan khusus.",
+    "time": "14:47"
+  },
+  {
+    "id": 1772697163411,
+    "sender": "user",
+    "text": "Hai Bagaimana cara mengatasi mual",
+    "time": "14:52"
+  },
+  {
+    "id": 1772697167341,
+    "sender": "bot",
+    "text": "Selamat datang, ibu! Mual dan muntah atau morning sickness seringkali terjadi selama trimester pertama kehamilan. Anda bisa mencoba beberapa cara untuk mengatasinya, seperti:\n\n- Makan secara perlahan dan frekuensi sering, untuk menghindari makanan yang membuat perut Anda kembung.\n- Minum air putih yang cukup untuk menjaga keseimbangan cairan tubuh Anda.\n- Hindari makanan pedas atau berbau kuat.\n- Istirahat yang cukup dan tidak terlalu banyak aktifitas badan.\n\nNamun, jika gejala mual dan muntah Anda parah, seperti mengalami demam, diare, atau kesulitan bernapas, silakan berkonsultasi dengan dokter atau bidan saya lebih lanjut.",
+    "time": "14:52"
+  },
+  {
+    "id": 1772697187952,
+    "sender": "user",
+    "text": "saya juga mengalami pusing bagaimana cara mengatasinya ya",
+    "time": "14:53"
+  },
+  {
+    "id": 1772697191896,
+    "sender": "bot",
+    "text": "Pusing dan mual adalah gejala yang umum dialami oleh ibu hamil trimester pertama. Berikut beberapa tips yang dapat membantu mengurangi pusing dan mual:\n\n- Pastikan Anda makan secara teratur, tapi jangan terlalu banyak makan dalam satu kali.\n- Pilih makanan yang ringan dan mudah dicerna seperti nasi goreng, mie instan, atau buah-buahan.\n- Hindari makanan yang berbau kuat atau pahit, karena dapat memicu mual dan pusing.\n- Jangan lupa untuk minum air putih yang cukup untuk menjaga hidrasi tubuh.\n- Jika gejala parah, jangan ragu untuk berkonsultasi dengan dokter atau bidan saya.\n\nNamun, perlu diingat bahwa jika gejala Anda disertai dengan demam, kejang, atau kram perut yang berkepanjangan, segera hubungi dokter atau bidan saya untuk konsultasi lebih lanjut. Sebagai bidan virtual, saya belum dapat melakukan pemeriksaan fisik, jadi sebaiknya Anda mengonsultasikan langsung dengan dokter atau bidan.",
+    "time": "14:53"
+  },
+  {
+    "id": 1772697247237,
+    "sender": "user",
+    "text": "Halo apa saja yang bisa kamu lakukan",
+    "time": "14:54"
+  },
+  {
+    "id": 1772697250082,
+    "sender": "bot",
+    "text": "Saya bidan Sinta, asisten kesehatan virtual yang dapat menjawab pertanyaan Anda tentang kesehatan, terutama bagi ibu hamil trimester pertama. Saya dapat memberikan saran, informasi, dan dukungan untuk mengatasi gejala mual dan muntah (morning sickness) yang Anda alami. Namun, perlu diingat bahwa saya bukan pengganti dokter, jadi jika gejala Anda parah atau Anda memiliki keraguan, sebaiknya konsultasikan dengan dokter atau bidan.",
+    "time": "14:54"
+  },
+  {
+    "id": 1772697291108,
+    "sender": "user",
+    "text": "saya mual",
+    "time": "14:54"
+  },
+  {
+    "id": 1772697292931,
+    "sender": "bot",
+    "text": "Saya paham bahwa morning sickness bisa sangat menyiksa. Mual dan muntah pada trimester pertama biasanya disebabkan oleh perubahan hormon selama kehamilan. Untuk mengatasinya, coba minum air putih yang banyak, makanlah makanan yang ringan dan mudah dicerna, dan hindari aroma yang kuat.\n\nNamun, jika gejalanya parah, saya sarankan Anda berkonsultasi dengan dokter atau bidan untuk mendapatkan saran yang lebih spesifik.",
+    "time": "14:54"
+  },
+  {
+    "id": 1772697680026,
+    "sender": "user",
+    "text": "Hai apa yang bisa kamu lakukan",
+    "time": "15:01"
+  },
+  {
+    "id": 1772697681689,
+    "sender": "bot",
+    "text": "Hai! Selamat datang, aku Bidan Nisa! Kamu bisa bertanya tentang kehamilan, khususnya trimester pertama, seperti mual dan muntah (morning sickness), perubahan fisik, dan tips untuk menjaga kesehatan ibu dan janin. Jika kamu memiliki pertanyaan atau kekhawatiran, aku senang membantu! Namun, perlu diingat bahwa aku bukan pengganti dokter atau bidan, jadi jika gejalamu parah, pastikan kamu berkonsultasi dengan dokter atau bidan terdekat.",
+    "time": "15:01"
+  },
+  {
+    "id": 1772697780543,
+    "sender": "user",
+    "text": "Saya pusing dan mual nih",
+    "time": "15:03"
+  },
+  {
+    "id": 1772697782365,
+    "sender": "bot",
+    "text": "Maaf kamu merasa tidak enak! Gejala pusing dan mual pada trimester pertama adalah hal yang normal, terutama disebabkan oleh perubahan level hormon estrogen dan progesteron. Namun, jika gejalanya parah, mengganggu aktivitas sehari-hari, atau disertai dengan gejala lain seperti muntah darah atau sakit perut, sebaiknya kamu berkonsultasi dengan dokter atau bidan untuk mendapatkan penanganan yang tepat.",
+    "time": "15:03"
+  },
+  {
+    "id": 1772697819959,
+    "sender": "user",
+    "text": "Hai apa saja yang bisa kamu lakukan jawab singkat saja",
+    "time": "15:03"
+  },
+  {
+    "id": 1772697820863,
+    "sender": "bot",
+    "text": "Selamat datang! Sebagai Bidan Nisa, saya dapat membantu menjawab pertanyaan Anda tentang mual dan muntah (morning sickness) di trimester pertama kehamilan.",
+    "time": "15:03"
+  },
+  {
+    "id": 1772697886393,
+    "sender": "user",
+    "text": "Halo apa yang bisa kamu lakukan jawab secara singkat",
+    "time": "15:04"
+  },
+  {
+    "id": 1772697890397,
+    "sender": "bot",
+    "text": "Halo! Saya Bidan Nisa, asisten kesehatan virtual yang bisa membantu menjawab pertanyaan Anda tentang kesehatan dan kehamilan, terutama tentang trimester pertama. Apa yang membelumuncul dalam pikiran Anda?",
+    "time": "15:04"
+  },
+  {
+    "id": 1772698108277,
+    "sender": "user",
+    "text": "Bagaimana cara mengatasi mual?",
+    "time": "15:08"
+  },
+  {
+    "id": 1772698109985,
+    "sender": "bot",
+    "text": "Selamat mengetahui kehamilan Anda! Mual dan muntah biasanya terjadi pada trimester pertama kehamilan. Untuk mengatasi mual, Anda dapat mencoba beberapa tips seperti minum air putih yang banyak, menghindari makanan berbau amis atau pedas, dan makan secara kecil-kecil. Jika gejala tidak membaik, sebaiknya berkonsultasi dengan dokter atau bidan untuk mendapatkan informasi lebih lanjut dan perawatan yang lebih tepat.",
+    "time": "15:08"
+  },
+  {
+    "id": 1772698156151,
+    "sender": "user",
+    "text": "Bagaimana cara mengatasi mual?",
+    "time": "15:09"
+  },
+  {
+    "id": 1772698157476,
+    "sender": "bot",
+    "text": "Saya senang membantu! Mual (morning sickness) adalah gejala umum pada ibu hamil, terutama pada trimester pertama. Berikut beberapa cara untuk mengatasi mual:\n\n- Makan secara perlahan dan teratur untuk menjaga kadar gula darah stabil.\n- Minum air dan cairan yang banyak untuk menghindari dehidrasi.\n- Hindari makanan yang dapat memicu mual seperti makanan asin atau pedas.\n- Bermalamlah dengan cara berbaring terlentang dan mengambil napas dalam-dalam.\n\nNamun, saya ingin menekankan bahwa jika Anda mengalami muntah berat, mual yang parah, atau gejala lainnya seperti kelelahan, perdarahan, atau sakit perut, segera konsultasikan dengan dokter atau bidan untuk mendapatkan perawatan yang tepat.",
+    "time": "15:09"
+  },
+  {
+    "id": 1772698212569,
+    "sender": "user",
+    "text": "Bagaimana cara mengatasi mual?",
+    "time": "15:10"
+  },
+  {
+    "id": 1772698213594,
+    "sender": "bot",
+    "text": "Selamat melahirkan, ibu! Jika Anda mengalami mual, cobalah minum air putih secara bertahap sehari, makanlah makanan kecil dan sering, hindari makanan yang beraroma kuat dan asam, serta istirahatlah cukup setiap hari. Jangan lupa untuk berkonsultasi dengan dokter atau bidan jika gejala mual Anda semakin parah dan tidak kunjung membaik.",
+    "time": "15:10"
+  },
+  {
+    "id": 1772698321525,
+    "sender": "user",
+    "text": "Obat apa yang boleh diminum?",
+    "time": "15:12"
+  },
+  {
+    "id": 1772698322520,
+    "sender": "bot",
+    "text": "Sebagai bidan, saya tidak akan merekomendasikan pengobatan tertentu karena setiap ibu hamil memiliki kondisi yang unik. Namun, beberapa tips yang mungkin membantu mengurangi gejala mual dan muntah adalah:\n\n- Minum banyak cairan, seperti air mineral atau teh hangat, untuk menghindari dehidrasi\n- Makan secara perlahan-lahan dan dalam jumlah kecil untuk mengurangi beban pencerna\n- Menghindari makanan berbau kuat, asin, atau pedas\n- Menghindari makanan yang dapat membuat mual semakin parah, seperti lemak berlebihan atau gluten\n\nNamun, jika gejala Anda parah atau tidak kunjung membaik, silakan berkonsultasi dengan dokter atau bidan untuk mendapatkan saran yang lebih spesifik dan perawatan yang tepat.",
+    "time": "15:12"
+  },
+  {
+    "id": 1772698332952,
+    "sender": "user",
+    "text": "namun",
+    "time": "15:12"
+  },
+  {
+    "id": 1772698333523,
+    "sender": "bot",
+    "text": "Tentu saja! Saya Bidan Nisa, senang membantu. Anda mengalami mual dan muntah saat hamil, yaitu fenomena umum yang disebut morning sickness. Beberapa tips yang bisa Anda coba untuk mengurangi gejala ini adalah dengan mengonsumsi makanan yang ringan dan sering, tetapi jangan lupa untuk minum air yang cukup.",
+    "time": "15:12"
+  }
+]

@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Bidan - Mual Muntah Kehamilan</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat CSS kustom -->
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body class="bg-gray-200 flex items-center justify-center min-h-screen">
+    <!-- Welcome Page -->
+    <div id="welcome-page" class="welcome-page">
+      <div class="welcome-logo">
+        <span>B</span>
+      </div>
+      <div class="welcome-text">
+        <h1>Selamat Datang di Bidan Nisa</h1>
+        <p>Asisten Kesehatan Ibu Hamil</p>
+      </div>
+      <div class="welcome-progress">
+        <div id="welcome-progress-bar" class="welcome-progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- Kontainer utama menyerupai ponsel -->
+    <div
+      id="chat-container"
+      class="w-full max-w-md bg-white shadow-lg overflow-hidden flex flex-col opacity-0 transition-opacity duration-500"
+      style="height: 812px; /* Perkiraan tinggi iPhone X/11 */"
+    >
+      <!-- 1. Header -->
+      <header class="bg-white shadow-sm z-10">
+        <!-- Baris status dengan waktu real-time -->
+        <div
+          class="flex justify-between items-center px-4 pt-4 pb-2 text-sm text-gray-700"
+        >
+          <span id="current-time" class="font-medium"></span>
+        </div>
+
+        <!-- Header Navigasi -->
+        <div
+          class="flex items-center justify-between px-3 py-2 border-b border-gray-100"
+        >
+          <!-- Kiri: Panah kembali & Info Toko -->
+          <div class="flex items-center space-x-2">
+            <!-- Ikon Panah Kembali -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-gray-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+
+            <!-- Logo Toko -->
+            <div
+              class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-500 font-bold text-xl"
+            >
+              B
+            </div>
+
+            <!-- Info Toko -->
+            <div>
+              <h1 class="font-bold text-gray-900 text-base">
+                Bidan Nisa - Info Bumil
+              </h1>
+              <p class="text-xs text-gray-500">
+                Biasanya merespons dalam beberapa d...
+              </p>
+            </div>
+          </div>
+
+          <!-- Kanan: Ikon -->
+          <div class="flex items-center space-x-3 text-gray-700">
+            <!-- Ikon Toko/Keranjang -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <!-- Ikon Opsi Lain -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+              />
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- 2. Area Chat -->
+      <main
+        id="chat-area-main"
+        class="flex-1 overflow-y-auto bg-gray-100 p-4 space-y-4 chat-area"
+      >
+        <!-- Pesan Selamat Datang -->
+        <div class="welcome-container">
+          <div class="flex items-start space-x-2">
+            <!-- Ikon Bot -->
+            <div
+              class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 flex-shrink-0 welcome-icon"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <!-- Gelembung Chat -->
+            <div
+              class="bg-white rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm bot-bubble"
+            >
+              <p class="text-sm text-gray-800">
+                Halo, selamat datang di layanan konsultasi kehamilan. Ada yang
+                bisa saya bantu terkait mual dan muntah di trimester pertama?
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pesan Produk -->
+        <!-- Bagian ini dihapus karena tidak relevan dengan tema kesehatan -->
+
+        <!-- Label Chatbot -->
+        <div class="text-center mt-4">
+          <span
+            class="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-full inline-block bot-card"
+            >Dikirim oleh chatbot</span
+          >
+        </div>
+
+        <!-- Kartu Opsi Cepat -->
+        <div class="flex justify-center mt-4">
+          <div
+            class="bg-white rounded-lg shadow-lg p-4 w-full max-w-sm bot-card"
+          >
+            <h2 class="font-bold text-gray-900 mb-3">
+              Ada yang bisa kami bantu hari ini?
+            </h2>
+            <ul class="divide-y divide-gray-100">
+              <!-- Opsi 1 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Bagaimana cara mengatasi mual?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+              <!-- Opsi 2 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Makanan apa yang aman dikonsumsi?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+              <!-- Opsi 3 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Kapan mual muntah ini akan berhenti?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+              <!-- Opsi 4 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Apakah ini berbahaya untuk janin saya?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+              <!-- Opsi 5 -->
+              <li
+                onclick="handleQuickReply(this)"
+                class="flex justify-between items-center py-3 text-sm text-gray-800 cursor-pointer hover:bg-gray-50"
+              >
+                <span>Obat apa yang boleh diminum?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </main>
+
+      <!-- 3. Footer / Input Area -->
+      <footer class="bg-white border-t border-gray-100 p-3">
+        <!-- Tombol Aksi Cepat -->
+        <div class="flex items-center space-x-2 mb-3">
+          <button
+            class="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center space-x-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span>Buat Janji Temu</span>
+          </button>
+          <button
+            class="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center space-x-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h6m-3-4h3"
+              />
+            </svg>
+            <span>Artikel Kesehatan</span>
+          </button>
+        </div>
+
+        <!-- Input Pesan -->
+        <div class="flex items-center space-x-2">
+          <button class="text-gray-500 p-2 rounded-full hover:bg-gray-100">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </button>
+
+          <div class="flex-1 relative">
+            <input
+              type="text"
+              id="chat-input"
+              placeholder="Kirim pesan..."
+              class="w-full bg-gray-100 rounded-full py-2.5 px-4 pr-20 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
+              onkeyup="toggleSendButton()"
+            />
+
+            <!-- Tombol ✨ Magic Write -->
+            <button
+              id="magic-write-btn"
+              onclick="handleMagicWrite()"
+              title="✨ Bantu saya tulis pesan"
+              class="absolute right-10 top-1/2 -translate-y-1/2 text-gray-500 p-1.5 rounded-full hover:bg-gray-200"
+            >
+              <span class="text-lg">✨</span>
+            </button>
+
+            <!-- Tombol Kirim -->
+            <button
+              id="send-btn"
+              onclick="handleSendClick()"
+              class="absolute right-2 top-1/2 -translate-y-1/2 text-orange-500 p-1.5 rounded-full hover:bg-orange-100 disabled:text-gray-300 disabled:hover:bg-transparent"
+              disabled
+            >
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  d="M3.105 3.106a.75.75 0 01.884-.04l14 7a.75.75 0 010 1.372l-14 7A.75.75 0 013 17.75V3.75a.75.75 0 01.105-.344z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Modal untuk Loading/Error -->
+    <div
+      id="loading-modal"
+      class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4"
+    >
+      <div
+        class="bg-white rounded-lg p-6 shadow-xl flex items-center space-x-4"
+      >
+        <!-- Spinner -->
+        <svg
+          class="animate-spin h-6 w-6 text-orange-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        <span id="modal-text" class="text-gray-700">Memproses...</span>
+      </div>
+    </div>
+
+    <!-- Memuat JavaScript kustom -->
+    <script src="scripts/main.js"></script>
+  </body>
+</html>
