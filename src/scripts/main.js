@@ -53,7 +53,9 @@ async function fetchWithBackoff(payload, maxRetries = 3) {
       if (i === maxRetries - 1) {
         throw error; // Gagal setelah semua percobaan
       }
-      await new Promise((resolve) => setTimeout(resolve, delay));
+      // Capture delay value sebelum masuk async callback (fix no-loop-func)
+      const waitMs = delay;
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
       delay *= 2; // Exponential backoff
     }
   }
@@ -143,6 +145,7 @@ function handleSendClick() {
   handleSendMessage(messageText);
 }
 
+// eslint-disable-next-line no-unused-vars
 function handleQuickReply(element) {
   const messageText = element.querySelector("span").textContent.trim();
   handleSendMessage(messageText);
@@ -182,6 +185,7 @@ async function getBotReply(userMessage) {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 async function handleMagicWrite() {
   const userKeywords = chatInput.value.trim();
   if (!userKeywords) {

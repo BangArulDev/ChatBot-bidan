@@ -264,6 +264,7 @@ export default function Chat() {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   async function handleMagicWrite() {
     const userKeywords = message.trim();
     if (!userKeywords) {
