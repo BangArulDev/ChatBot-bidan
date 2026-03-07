@@ -60,13 +60,8 @@ export default function Chat() {
     }
   }, [messages]);
 
-  const quickReplyOptions = [
-    "Bagaimana cara mengatasi mual?",
-    "Makanan apa yang aman dikonsumsi?",
-    "Kapan mual muntah ini akan berhenti?",
-    "Apakah ini berbahaya untuk janin saya?",
-    "Obat apa yang boleh diminum?",
-  ];
+  // Template pertanyaan diambil otomatis dari knowledgeBase.js
+  const quickReplyOptions = knowledgeBase.map((item) => item.pertanyaan);
 
   /**
    * Konversi markdown sederhana ke HTML.
