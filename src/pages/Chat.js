@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   fetchWithBackoff,
-  botSystemPrompt,
+  buildSystemPrompt,
   magicWriteSystemPrompt,
 } from "../scripts/main";
+import knowledgeBase from "../data/knowledgeBase";
 
 export default function Chat() {
   // try to persist a simple username for the session so admin can see who chatted
@@ -241,10 +242,11 @@ export default function Chat() {
   }
 
   async function getBotReply(userMessage) {
+    const systemPrompt = buildSystemPrompt(knowledgeBase);
     const payload = {
       model: "llama-3.1-8b-instant",
       messages: [
-        { role: "system", content: botSystemPrompt },
+        { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
     };

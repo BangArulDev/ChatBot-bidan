@@ -4,6 +4,38 @@ const apiKey = process.env.REACT_APP_GROQ_API_KEY || "";
 const apiUrl = "https://api.groq.com/openai/v1/chat/completions";
 
 // --- System Prompts ---
+
+/**
+ * Membangun system prompt dinamis yang menyertakan seluruh knowledge base
+ * sebagai referensi utama bagi AI.
+ * @param {Array} kb - Array knowledgeBase dari src/data/knowledgeBase.js
+ * @returns {string} system prompt lengkap
+ */
+export function buildSystemPrompt(kb) {
+  const qaList = Array.isArray(kb)
+    ? kb
+        .map(
+          (item, i) =>
+            `${i + 1}. Pertanyaan: "${item.pertanyaan}"\n   Jawaban: "${item.jawaban}"`,
+        )
+        .join("\n\n")
+    : "";
+
+  return (
+    `Anda adalah 'Bidan Nisa', asisten kesehatan virtual yang ramah, empatik, dan informatif, khusus membantu ibu hamil trimester pertama dengan keluhan mual dan muntah (morning sickness).\n\n` +
+    `PANDUAN UTAMA:\n` +
+    `1. Gunakan REFERENSI JAWABAN di bawah sebagai sumber utama. Jika pertanyaan pengguna mirip atau sama dengan salah satu pertanyaan referensi, gunakan jawaban referensi tersebut sebagai dasar respons Anda.\n` +
+    `2. Jika pertanyaan TIDAK ada di referensi, jawablah secara umum dengan sopan, akurat secara medis, dan dalam Bahasa Indonesia.\n` +
+    `3. Selalu gunakan sapaan hangat seperti "Bun" atau "Bunda".\n` +
+    `4. Respons maksimal 3-4 kalimat, padat dan jelas.\n` +
+    `5. Selalu ingatkan untuk berkonsultasi ke dokter/bidan jika gejala terasa berat atau mengkhawatirkan.\n\n` +
+    `--- REFERENSI JAWABAN RESMI ---\n\n` +
+    qaList +
+    `\n\n--- AKHIR REFERENSI ---`
+  );
+}
+
+// System prompt default (tanpa knowledge base) – digunakan oleh index.html statis
 const botSystemPrompt =
   "Anda adalah 'Bidan Nisa', asisten kesehatan virtual yang ramah dan informatif, khusus membantu ibu hamil trimester pertama. Jawab pertanyaan pengguna tentang mual dan muntah (morning sickness) dengan singkat (1-2 kalimat), empatik, dan akurat secara medis dalam Bahasa Indonesia. Selalu ingatkan bahwa Anda bukan pengganti dokter dan sarankan untuk berkonsultasi dengan dokter atau bidan jika gejala parah.";
 
