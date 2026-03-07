@@ -4,7 +4,7 @@ import {
   buildSystemPrompt,
   magicWriteSystemPrompt,
 } from "../scripts/main";
-import knowledgeBase from "../data/knowledgeBase";
+import knowledgeBase, { findAnswer } from "../data/knowledgeBase";
 
 export default function Chat() {
   // try to persist a simple username for the session so admin can see who chatted
@@ -242,6 +242,17 @@ export default function Chat() {
   }
 
   async function getBotReply(userMessage) {
+    // ── Cek Knowledge Base lokal terlebih dahulu ──────────────
+    const localAnswer = findAnswer(userMessage);
+    if (localAnswer) {
+      // Jawaban ditemukan di KB → tampilkan langsung, tanpa panggil API
+      addMessage("bot", localAnswer);
+      speak(localAnswer);
+      setTyping(false);
+      return;
+    }
+
+    // ── Tidak ditemukan di KB → panggil Groq API ─────────────
     const systemPrompt = buildSystemPrompt(knowledgeBase);
     const payload = {
       model: "llama-3.1-8b-instant",

@@ -135,4 +135,113 @@ const knowledgeBase = [
   },
 ];
 
+// ── Stopwords (kata umum yang diabaikan saat pencocokan) ──────
+const STOPWORDS = new Set([
+  "apa",
+  "apakah",
+  "saya",
+  "aku",
+  "kamu",
+  "anda",
+  "bunda",
+  "bun",
+  "yang",
+  "di",
+  "ke",
+  "dari",
+  "dan",
+  "atau",
+  "ini",
+  "itu",
+  "dengan",
+  "untuk",
+  "pada",
+  "tidak",
+  "bisa",
+  "ada",
+  "ya",
+  "gak",
+  "ga",
+  "banget",
+  "dong",
+  "gimana",
+  "bagaimana",
+  "kenapa",
+  "mengapa",
+  "kapan",
+  "berapa",
+  "kalau",
+  "jika",
+  "tapi",
+  "terus",
+  "juga",
+  "kok",
+  "sih",
+  "lagi",
+  "sudah",
+  "sudah",
+  "mau",
+  "boleh",
+  "buat",
+  "nih",
+  "deh",
+  "loh",
+]);
+
+/**
+ * Normalisasi teks: huruf kecil semua, hapus tanda baca, hanya ambil kata yang bukan stopword.
+ * @param {string} text
+ * @returns {string[]} array kata signifikan
+ */
+function tokenize(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 1 && !STOPWORDS.has(w));
+}
+
+/**
+ * Hitung skor kecocokan antara dua string (0–1) berdasarkan overlap kata signifikan.
+ * @param {string} query - pertanyaan dari user
+ * @param {string} candidate - pertanyaan dari knowledge base
+ * @returns {number}
+ */
+function similarity(query, candidate) {
+  const qTokens = new Set(tokenize(query));
+  const cTokens = new Set(tokenize(candidate));
+  if (qTokens.size === 0 || cTokens.size === 0) return 0;
+
+  let matches = 0;
+  qTokens.forEach((t) => {
+    if (cTokens.has(t)) matches++;
+  });
+
+  // Jaccard-like: irisan / gabungan
+  const union = new Set([...qTokens, ...cTokens]).size;
+  return matches / union;
+}
+
+/**
+ * Cari jawaban yang paling cocok dari knowledge base.
+ * Mengembalikan string jawaban jika skor ≥ threshold, atau null jika tidak ada yang cocok.
+ * @param {string} userQuestion
+ * @param {number} [threshold=0.3] - semakin tinggi = semakin ketat
+ * @returns {string|null}
+ */
+export function findAnswer(userQuestion, threshold = 0.3) {
+  let bestScore = 0;
+  let bestAnswer = null;
+
+  for (const item of knowledgeBase) {
+    const score = similarity(userQuestion, item.pertanyaan);
+    if (score > bestScore) {
+      bestScore = score;
+      bestAnswer = item.jawaban;
+    }
+  }
+
+  return bestScore >= threshold ? bestAnswer : null;
+}
+
 export default knowledgeBase;
