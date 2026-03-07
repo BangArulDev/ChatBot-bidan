@@ -68,6 +68,19 @@ export default function Chat() {
     "Obat apa yang boleh diminum?",
   ];
 
+  /**
+   * Konversi markdown sederhana ke HTML.
+   * **teks** → <strong>teks</strong>
+   * *teks*  → <em>teks</em>
+   * \n      → <br>
+   */
+  function formatText(text) {
+    return text
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") // bold
+      .replace(/\*(.+?)\*/g, "<em>$1</em>") // italic
+      .replace(/\n/g, "<br>"); // newline
+  }
+
   function addMessage(sender, text) {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, "0");
@@ -650,7 +663,7 @@ export default function Chat() {
                         <p
                           className="text-sm text-gray-800 mb-3"
                           dangerouslySetInnerHTML={{
-                            __html: m.text.replace(/\n/g, "<br>"),
+                            __html: formatText(m.text),
                           }}
                         />
                         <div className="text-[9px] text-gray-500 mt-1 text-right">
