@@ -506,11 +506,9 @@ export default function Chat() {
 
               <div>
                 <h1 className="font-bold text-gray-900 text-base">
-                  Bidan Nisa - Info Bumil
+                  Bidan Nisa
                 </h1>
-                <p className="text-xs text-gray-500">
-                  Biasanya merespons dalam beberapa detik...
-                </p>
+                <p className="text-xs text-gray-500">info mual muntah</p>
               </div>
             </div>
 
