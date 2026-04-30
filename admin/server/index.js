@@ -65,7 +65,7 @@ app.get("/api/chat-history", async (req, res) => {
 
 // POST new message to MongoDB
 app.post("/api/chat-history", async (req, res) => {
-  const { sender, text, time } = req.body;
+  const { sender, text, time, userId, userName } = req.body;
   if (!sender || typeof text === "undefined") {
     return res.status(400).json({ error: "Invalid payload" });
   }
@@ -78,6 +78,8 @@ app.post("/api/chat-history", async (req, res) => {
         hour: "2-digit",
         minute: "2-digit",
       }),
+      userId: userId || "anonymous",
+      userName: userName || "Pengguna",
     });
     await chat.save();
     res.json(chat);

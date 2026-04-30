@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { ArrowPathIcon, TrashIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowPathIcon,
+  TrashIcon,
+  ArrowDownTrayIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  UserCircleIcon,
+  ChatBubbleLeftRightIcon,
+} from "@heroicons/react/24/outline";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
@@ -7,6 +15,8 @@ export default function ChatHistory() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expandedUsers, setExpandedUsers] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
 
   const formatDate = (dateString) => {
     try {
@@ -20,6 +30,15 @@ export default function ChatHistory() {
     }
   };
 
+  const formatTime = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat("id-ID", { timeStyle: "short" }).format(date);
+    } catch (e) {
+      return dateString;
+    }
+  };
+
   const fetchHistory = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -27,7 +46,7 @@ export default function ChatHistory() {
       const res = await fetch(`${API_BASE}/api/chat-history`);
       if (res.ok) {
         const arr = await res.json();
-        setHistory(arr.slice().reverse());
+        setHistory(arr);
       } else {
         throw new Error("Failed to fetch from server");
       }
@@ -35,7 +54,7 @@ export default function ChatHistory() {
       try {
         const raw = localStorage.getItem("chat_history");
         const arr = raw ? JSON.parse(raw) : [];
-        setHistory(arr.reverse());
+        setHistory(arr);
       } catch {
         setError("Gagal memuat riwayat chat");
         setHistory([]);
@@ -49,33 +68,65 @@ export default function ChatHistory() {
     fetchHistory();
   }, [fetchHistory]);
 
+  // Group chats by userId
+  const groupedByUser = history.reduce((acc, chat) => {
+    const key = chat.userId || "anonymous";
+    if (!acc[key]) {
+      acc[key] = {
+        userId: key,
+        userName: chat.userName || "Pengguna",
+        messages: [],
+      };
+    }
+    acc[key].messages.push(chat);
+    return acc;
+  }, {});
+
+  const userGroups = Object.values(groupedByUser)
+    .map((group) => ({
+      ...group,
+      messages: group.messages.sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      ),
+      lastMessage: group.messages[group.messages.length - 1],
+    }))
+    .sort((a, b) => new Date(b.lastMessage?.createdAt) - new Date(a.lastMessage?.createdAt));
+
+  const filteredGroups = userGroups.filter((g) =>
+    g.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    g.userId.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const toggleUser = (userId) => {
+    setExpandedUsers((prev) => ({ ...prev, [userId]: !prev[userId] }));
+  };
+
   async function clearAll() {
     if (!window.confirm("Yakin ingin menghapus semua riwayat chat?")) return;
     try {
       await fetch(`${API_BASE}/api/chat-history`, { method: "DELETE" });
       setHistory([]);
-    } catch (e) {
+    } catch {
       localStorage.removeItem("chat_history");
       setHistory([]);
     }
   }
 
   async function deleteItem(id) {
-    if (!window.confirm("Hapus pesan ini?")) return;
     try {
       await fetch(`${API_BASE}/api/chat-history/${id}`, { method: "DELETE" });
-      await fetchHistory();
+      setHistory((prev) => prev.filter((m) => (m._id || m.id) !== id));
     } catch (e) {
       const raw = localStorage.getItem("chat_history");
       const arr = raw ? JSON.parse(raw) : [];
-      const next = arr.filter((r) => r.id !== id && r._id !== id);
+      const next = arr.filter((r) => r.id !== id);
       localStorage.setItem("chat_history", JSON.stringify(next));
-      setHistory(next.reverse());
+      setHistory(next);
     }
   }
 
   async function exportJson() {
-    const blob = new Blob([JSON.stringify(history.slice().reverse(), null, 2)], {
+    const blob = new Blob([JSON.stringify(history, null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
@@ -87,42 +138,27 @@ export default function ChatHistory() {
   }
 
   const totalMessages = history.length;
-  const userMessages = history.filter((h) => h.sender === "user").length;
+  const totalUsers = Object.keys(groupedByUser).length;
   const botMessages = history.filter((h) => h.sender === "bot").length;
 
   return (
     <div style={{ padding: "28px 32px", background: "#f8fafc", minHeight: "100vh" }}>
       {/* Header */}
       <div style={{ marginBottom: "28px" }}>
-        <h1
-          style={{
-            fontSize: "24px",
-            fontWeight: "700",
-            color: "#0f172a",
-            margin: 0,
-            letterSpacing: "-0.3px",
-          }}
-        >
+        <h1 style={{ fontSize: "24px", fontWeight: "700", color: "#0f172a", margin: 0, letterSpacing: "-0.3px" }}>
           Riwayat Chat
         </h1>
         <p style={{ fontSize: "14px", color: "#64748b", margin: "4px 0 0" }}>
-          Monitor dan kelola percakapan pengguna dengan Bidan Nisa
+          Monitor percakapan pengguna dengan Bidan Nisa
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "16px",
-          marginBottom: "24px",
-        }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "24px" }}>
         {[
-          { label: "Total Pesan", value: totalMessages, color: "#ec4899", bg: "rgba(236,72,153,0.08)" },
-          { label: "Pesan Pengguna", value: userMessages, color: "#3b82f6", bg: "rgba(59,130,246,0.08)" },
-          { label: "Respons Bot", value: botMessages, color: "#10b981", bg: "rgba(16,185,129,0.08)" },
+          { label: "Total Pengguna", value: totalUsers, color: "#ec4899", icon: "👥" },
+          { label: "Total Pesan", value: totalMessages, color: "#3b82f6", icon: "💬" },
+          { label: "Respons Bot", value: botMessages, color: "#10b981", icon: "🤖" },
         ].map((stat) => (
           <div
             key={stat.label}
@@ -133,30 +169,25 @@ export default function ChatHistory() {
               padding: "20px",
               border: "1px solid #e2e8f0",
               boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
             }}
           >
-            <p style={{ fontSize: "13px", color: "#64748b", margin: "0 0 8px", fontWeight: "500" }}>
-              {stat.label}
-            </p>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ fontSize: "28px", fontWeight: "700", color: stat.color }}>
+            <div style={{ fontSize: "28px" }}>{stat.icon}</div>
+            <div>
+              <p style={{ fontSize: "13px", color: "#64748b", margin: "0 0 4px", fontWeight: "500" }}>
+                {stat.label}
+              </p>
+              <p style={{ fontSize: "26px", fontWeight: "800", color: stat.color, margin: 0 }}>
                 {loading ? "—" : stat.value}
-              </span>
-              <div
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  background: stat.color,
-                  opacity: 0.5,
-                }}
-              />
+              </p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Table Container */}
+      {/* Search & Actions */}
       <div
         style={{
           background: "white",
@@ -166,29 +197,50 @@ export default function ChatHistory() {
           overflow: "hidden",
         }}
       >
-        {/* Table Toolbar */}
+        {/* Toolbar */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "18px 24px",
+            padding: "16px 20px",
             borderBottom: "1px solid #f1f5f9",
+            gap: "12px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div
+          {/* Search */}
+          <div style={{ position: "relative", flex: 1, maxWidth: "320px" }}>
+            <span
               style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                background: loading ? "#f59e0b" : "#10b981",
+                position: "absolute",
+                left: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                fontSize: "15px",
               }}
-              className={loading ? "pulse-dot" : ""}
-            />
-            <span style={{ fontSize: "14px", fontWeight: "600", color: "#334155" }}>
-              {loading ? "Memuat data..." : `${totalMessages} pesan`}
+            >
+              🔍
             </span>
+            <input
+              type="text"
+              placeholder="Cari nama pengguna..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: "100%",
+                paddingLeft: "36px",
+                paddingRight: "12px",
+                paddingTop: "8px",
+                paddingBottom: "8px",
+                borderRadius: "8px",
+                border: "1px solid #e2e8f0",
+                fontSize: "13px",
+                color: "#334155",
+                background: "#f8fafc",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
           </div>
 
           <div style={{ display: "flex", gap: "8px" }}>
@@ -196,38 +248,24 @@ export default function ChatHistory() {
               onClick={fetchHistory}
               disabled={loading}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "8px 14px",
-                borderRadius: "8px",
-                background: "#f8fafc",
-                border: "1px solid #e2e8f0",
-                fontSize: "13px",
-                fontWeight: "500",
-                color: "#475569",
-                cursor: "pointer",
-                transition: "all 0.15s",
+                display: "flex", alignItems: "center", gap: "6px",
+                padding: "8px 14px", borderRadius: "8px",
+                background: "#f8fafc", border: "1px solid #e2e8f0",
+                fontSize: "13px", fontWeight: "500", color: "#475569", cursor: "pointer",
               }}
             >
-              <ArrowPathIcon style={{ width: "14px", height: "14px", color: "#64748b" }} />
+              <ArrowPathIcon style={{ width: "14px", height: "14px" }} />
               Refresh
             </button>
             <button
               onClick={exportJson}
               disabled={loading || history.length === 0}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "8px 14px",
-                borderRadius: "8px",
+                display: "flex", alignItems: "center", gap: "6px",
+                padding: "8px 14px", borderRadius: "8px",
                 background: "linear-gradient(135deg, #3b82f6, #2563eb)",
-                border: "none",
-                fontSize: "13px",
-                fontWeight: "500",
-                color: "white",
-                cursor: "pointer",
+                border: "none", fontSize: "13px", fontWeight: "500",
+                color: "white", cursor: "pointer",
                 boxShadow: "0 2px 8px rgba(59,130,246,0.3)",
               }}
             >
@@ -238,17 +276,11 @@ export default function ChatHistory() {
               onClick={clearAll}
               disabled={loading || history.length === 0}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "8px 14px",
-                borderRadius: "8px",
+                display: "flex", alignItems: "center", gap: "6px",
+                padding: "8px 14px", borderRadius: "8px",
                 background: "linear-gradient(135deg, #ef4444, #dc2626)",
-                border: "none",
-                fontSize: "13px",
-                fontWeight: "500",
-                color: "white",
-                cursor: "pointer",
+                border: "none", fontSize: "13px", fontWeight: "500",
+                color: "white", cursor: "pointer",
                 boxShadow: "0 2px 8px rgba(239,68,68,0.25)",
               }}
             >
@@ -258,170 +290,251 @@ export default function ChatHistory() {
           </div>
         </div>
 
-        {/* Table */}
+        {/* Content */}
         {loading ? (
           <div style={{ padding: "60px", textAlign: "center" }}>
             <div
               style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                border: "3px solid #f1f5f9",
-                borderTopColor: "#ec4899",
-                animation: "spin 1s linear infinite",
-                margin: "0 auto 16px",
+                width: "40px", height: "40px", borderRadius: "50%",
+                border: "3px solid #f1f5f9", borderTopColor: "#ec4899",
+                animation: "spin 1s linear infinite", margin: "0 auto 16px",
               }}
             />
             <p style={{ color: "#94a3b8", fontSize: "14px" }}>Memuat riwayat chat...</p>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
         ) : error ? (
-          <div
-            style={{
-              padding: "48px",
-              textAlign: "center",
-              color: "#ef4444",
-              fontSize: "14px",
-            }}
-          >
+          <div style={{ padding: "48px", textAlign: "center", color: "#ef4444", fontSize: "14px" }}>
             ⚠️ {error}
           </div>
-        ) : history.length === 0 ? (
+        ) : filteredGroups.length === 0 ? (
           <div style={{ padding: "60px", textAlign: "center" }}>
             <p style={{ fontSize: "32px", margin: "0 0 12px" }}>💬</p>
             <p style={{ color: "#94a3b8", fontSize: "14px", fontWeight: "500" }}>
-              Belum ada riwayat chat
+              {searchQuery ? "Tidak ada pengguna yang cocok" : "Belum ada riwayat chat"}
             </p>
           </div>
         ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ background: "#f8fafc" }}>
-                  {["Waktu", "Nama Pengguna", "Pengirim", "Pesan", "Aksi"].map((col) => (
-                    <th
-                      key={col}
-                      style={{
-                        padding: "12px 20px",
-                        textAlign: "left",
-                        fontSize: "11px",
-                        fontWeight: "700",
-                        color: "#94a3b8",
-                        letterSpacing: "0.8px",
-                        textTransform: "uppercase",
-                        borderBottom: "1px solid #f1f5f9",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {col}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((h, idx) => (
-                  <tr
-                    key={h._id || h.id || idx}
-                    className="table-row"
-                    style={{ borderBottom: "1px solid #f8fafc" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "#fdf2f8")}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          <div>
+            {filteredGroups.map((group, gIdx) => {
+              const isExpanded = expandedUsers[group.userId];
+              const lastMsg = group.lastMessage;
+              const userMsgCount = group.messages.filter((m) => m.sender === "user").length;
+
+              return (
+                <div
+                  key={group.userId}
+                  style={{ borderBottom: gIdx < filteredGroups.length - 1 ? "1px solid #f1f5f9" : "none" }}
+                >
+                  {/* User Row (clickable header) */}
+                  <div
+                    onClick={() => toggleUser(group.userId)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "16px 20px",
+                      cursor: "pointer",
+                      background: isExpanded ? "#fdf2f8" : "white",
+                      transition: "background 0.15s",
+                      gap: "14px",
+                    }}
+                    onMouseEnter={(e) => { if (!isExpanded) e.currentTarget.style.background = "#fafafa"; }}
+                    onMouseLeave={(e) => { if (!isExpanded) e.currentTarget.style.background = "white"; }}
                   >
-                    <td
+                    {/* Avatar */}
+                    <div
                       style={{
-                        padding: "14px 20px",
-                        fontSize: "12px",
-                        color: "#64748b",
-                        whiteSpace: "nowrap",
-                        verticalAlign: "top",
+                        width: "42px", height: "42px", borderRadius: "12px",
+                        background: "linear-gradient(135deg, #ec4899, #a855f7)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: "16px", fontWeight: "700", color: "white",
+                        flexShrink: 0, boxShadow: "0 2px 8px rgba(236,72,153,0.3)",
                       }}
                     >
-                      {formatDate(h.createdAt || h.time)}
-                    </td>
-                    <td
-                      style={{
-                        padding: "14px 20px",
-                        fontSize: "13px",
-                        color: "#475569",
-                        verticalAlign: "top",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {h.userName || h.name || (h.sender === "user" ? "Pengguna" : "Bidan Nisa")}
-                    </td>
-                    <td style={{ padding: "14px 20px", verticalAlign: "top" }}>
-                      <span
+                      {group.userName.charAt(0).toUpperCase()}
+                    </div>
+
+                    {/* User Info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "3px" }}>
+                        <span style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a" }}>
+                          {group.userName}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: "10px", padding: "2px 8px", borderRadius: "20px",
+                            background: "rgba(236,72,153,0.1)", color: "#ec4899", fontWeight: "600",
+                          }}
+                        >
+                          {group.messages.length} pesan
+                        </span>
+                        <span
+                          style={{
+                            fontSize: "10px", padding: "2px 8px", borderRadius: "20px",
+                            background: "rgba(59,130,246,0.1)", color: "#3b82f6", fontWeight: "600",
+                          }}
+                        >
+                          {userMsgCount} pertanyaan
+                        </span>
+                      </div>
+                      <p
                         style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          padding: "3px 10px",
-                          borderRadius: "20px",
-                          fontSize: "11px",
-                          fontWeight: "600",
-                          background:
-                            h.sender === "user"
-                              ? "rgba(59,130,246,0.1)"
-                              : "rgba(236,72,153,0.1)",
-                          color: h.sender === "user" ? "#3b82f6" : "#ec4899",
+                          fontSize: "12px", color: "#64748b", margin: 0,
+                          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                          maxWidth: "500px",
                         }}
                       >
-                        {h.sender === "user" ? "👤 User" : "🤖 Bot"}
+                        💬 {lastMsg?.text || "—"}
+                      </p>
+                    </div>
+
+                    {/* Time & Chevron */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+                      <span style={{ fontSize: "12px", color: "#94a3b8" }}>
+                        {lastMsg ? formatDate(lastMsg.createdAt) : "—"}
                       </span>
-                    </td>
-                    <td
+                      {isExpanded ? (
+                        <ChevronDownIcon style={{ width: "16px", height: "16px", color: "#ec4899" }} />
+                      ) : (
+                        <ChevronRightIcon style={{ width: "16px", height: "16px", color: "#94a3b8" }} />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Expanded Chat Detail */}
+                  {isExpanded && (
+                    <div
                       style={{
-                        padding: "14px 20px",
-                        fontSize: "13px",
-                        color: "#334155",
-                        maxWidth: "400px",
-                        verticalAlign: "top",
-                        lineHeight: "1.5",
+                        background: "#fdf2f8",
+                        borderTop: "1px solid #fce7f3",
+                        padding: "20px 24px",
                       }}
                     >
+                      {/* Chat header */}
                       <div
                         style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 3,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
+                          display: "flex", alignItems: "center", gap: "8px",
+                          marginBottom: "16px",
                         }}
                       >
-                        {h.text}
+                        <ChatBubbleLeftRightIcon style={{ width: "16px", height: "16px", color: "#ec4899" }} />
+                        <span style={{ fontSize: "13px", fontWeight: "700", color: "#be185d" }}>
+                          Percakapan {group.userName}
+                        </span>
                       </div>
-                    </td>
-                    <td style={{ padding: "14px 20px", verticalAlign: "top" }}>
-                      <button
-                        onClick={() => deleteItem(h._id || h.id)}
+
+                      {/* Chat messages */}
+                      <div
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                          padding: "6px 10px",
-                          borderRadius: "7px",
-                          background: "rgba(239,68,68,0.08)",
-                          border: "1px solid rgba(239,68,68,0.15)",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          color: "#ef4444",
-                          cursor: "pointer",
-                          transition: "all 0.15s",
-                          whiteSpace: "nowrap",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = "rgba(239,68,68,0.15)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = "rgba(239,68,68,0.08)";
+                          background: "white",
+                          borderRadius: "12px",
+                          border: "1px solid #fce7f3",
+                          overflow: "hidden",
+                          maxHeight: "400px",
+                          overflowY: "auto",
                         }}
                       >
-                        <TrashIcon style={{ width: "12px", height: "12px" }} />
-                        Hapus
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        {group.messages.map((msg, mIdx) => (
+                          <div
+                            key={msg._id || msg.id || mIdx}
+                            style={{
+                              display: "flex",
+                              alignItems: "flex-start",
+                              justifyContent: msg.sender === "user" ? "flex-end" : "flex-start",
+                              padding: "10px 16px",
+                              gap: "8px",
+                              borderBottom: mIdx < group.messages.length - 1 ? "1px solid #fdf2f8" : "none",
+                            }}
+                          >
+                            {msg.sender === "bot" && (
+                              <div
+                                style={{
+                                  width: "28px", height: "28px", borderRadius: "8px",
+                                  background: "linear-gradient(135deg, #ec4899, #a855f7)",
+                                  display: "flex", alignItems: "center", justifyContent: "center",
+                                  fontSize: "12px", flexShrink: 0, marginTop: "2px",
+                                }}
+                              >
+                                🤖
+                              </div>
+                            )}
+
+                            <div style={{ maxWidth: "65%" }}>
+                              <div
+                                style={{
+                                  padding: "10px 14px",
+                                  borderRadius: msg.sender === "user" ? "12px 12px 4px 12px" : "12px 12px 12px 4px",
+                                  background: msg.sender === "user"
+                                    ? "linear-gradient(135deg, #ec4899, #db2777)"
+                                    : "#f8fafc",
+                                  border: msg.sender === "user" ? "none" : "1px solid #e2e8f0",
+                                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                }}
+                              >
+                                <p
+                                  style={{
+                                    fontSize: "13px",
+                                    color: msg.sender === "user" ? "white" : "#334155",
+                                    margin: 0,
+                                    lineHeight: "1.5",
+                                    whiteSpace: "pre-wrap",
+                                  }}
+                                >
+                                  {msg.text}
+                                </p>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: msg.sender === "user" ? "flex-end" : "flex-start",
+                                  gap: "6px",
+                                  marginTop: "4px",
+                                }}
+                              >
+                                <span style={{ fontSize: "11px", color: "#94a3b8" }}>
+                                  {formatTime(msg.createdAt || msg.time)}
+                                </span>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    deleteItem(msg._id || msg.id);
+                                  }}
+                                  style={{
+                                    background: "none", border: "none",
+                                    cursor: "pointer", padding: "0 2px",
+                                    color: "#cbd5e1", fontSize: "11px",
+                                    transition: "color 0.15s",
+                                  }}
+                                  onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
+                                  onMouseLeave={(e) => (e.currentTarget.style.color = "#cbd5e1")}
+                                  title="Hapus pesan"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            </div>
+
+                            {msg.sender === "user" && (
+                              <div
+                                style={{
+                                  width: "28px", height: "28px", borderRadius: "8px",
+                                  background: "#e0f2fe",
+                                  display: "flex", alignItems: "center", justifyContent: "center",
+                                  fontSize: "12px", flexShrink: 0, marginTop: "2px",
+                                }}
+                              >
+                                👤
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

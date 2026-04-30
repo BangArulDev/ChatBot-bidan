@@ -13,6 +13,14 @@ const chatSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: String,
+    default: "anonymous",
+  },
+  userName: {
+    type: String,
+    default: "Pengguna",
+  },
   createdAt: {
     type: Date,
     default: Date.now,

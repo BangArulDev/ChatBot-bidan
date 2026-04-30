@@ -108,10 +108,19 @@ export default function Chat() {
     (async () => {
       try {
         const base = process.env.REACT_APP_API_URL || "http://localhost:5000";
+        // Get user info from localStorage (set during login)
+        const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const userId = storedUser?.id || localStorage.getItem("userId") || "anonymous";
+        const resolvedUserName = storedUser?.name || userName || "Pengguna";
         await fetch(`${base}/api/chat-history`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...newMsg, id: Date.now() }),
+          body: JSON.stringify({
+            ...newMsg,
+            id: Date.now(),
+            userId,
+            userName: resolvedUserName,
+          }),
         });
       } catch (e) {
         // ignore network errors; admin can fallback to localStorage
