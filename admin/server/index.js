@@ -1,90 +1,109 @@
+require("dotenv").config();
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const User = require("./models/User");
+const Chat = require("./models/Chat");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
+// Connect to MongoDB Atlas
 mongoose
-  .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/bidan-sinta", {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => {
-    console.log("Connected to MongoDB");
+  .then(async () => {
+    console.log("Connected to MongoDB Atlas");
+    await migrateJsonToMongo();
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
   });
 
-const DATA_DIR = path.join(__dirname, "data");
-const DB_FILE = path.join(DATA_DIR, "chat_history.json");
-
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(DB_FILE)) fs.writeFileSync(DB_FILE, "[]", "utf8");
-
-function readDb() {
+// Migration logic (One-time)
+async function migrateJsonToMongo() {
   try {
-    const raw = fs.readFileSync(DB_FILE, "utf8");
-    return JSON.parse(raw || "[]");
-  } catch (e) {
-    return [];
+    const DATA_DIR = path.join(__dirname, "data");
+    const DB_FILE = path.join(DATA_DIR, "chat_history.json");
+
+    if (fs.existsSync(DB_FILE)) {
+      const count = await Chat.countDocuments();
+      if (count === 0) {
+        console.log("Migrating chat history from JSON to MongoDB...");
+        const raw = fs.readFileSync(DB_FILE, "utf8");
+        const data = JSON.parse(raw || "[]");
+        if (data.length > 0) {
+          await Chat.insertMany(data.map(item => ({
+            sender: item.sender,
+            text: item.text,
+            time: item.time
+          })));
+          console.log(`Successfully migrated ${data.length} messages.`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Migration error:", err);
   }
 }
 
-function writeDb(arr) {
-  fs.writeFileSync(DB_FILE, JSON.stringify(arr, null, 2), "utf8");
-}
-
-// GET all history
-app.get("/api/chat-history", (req, res) => {
-  const arr = readDb();
-  res.json(arr);
+// GET all history from MongoDB
+app.get("/api/chat-history", async (req, res) => {
+  try {
+    const chats = await Chat.find().sort({ createdAt: 1 });
+    res.json(chats);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// POST new message
-app.post("/api/chat-history", (req, res) => {
-  const { sender, text, time, id } = req.body;
+// POST new message to MongoDB
+app.post("/api/chat-history", async (req, res) => {
+  const { sender, text, time } = req.body;
   if (!sender || typeof text === "undefined") {
     return res.status(400).json({ error: "Invalid payload" });
   }
-  const arr = readDb();
-  const item = {
-    id: id || Date.now(),
-    sender,
-    text,
-    time:
-      time ||
-      new Date().toLocaleTimeString("id-ID", {
+  
+  try {
+    const chat = new Chat({
+      sender,
+      text,
+      time: time || new Date().toLocaleTimeString("id-ID", {
         hour: "2-digit",
         minute: "2-digit",
       }),
-  };
-  arr.push(item);
-  // cap
-  if (arr.length > 5000) arr.splice(0, arr.length - 5000);
-  writeDb(arr);
-  res.json(item);
+    });
+    await chat.save();
+    res.json(chat);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// DELETE all
-app.delete("/api/chat-history", (req, res) => {
-  writeDb([]);
-  res.json({ ok: true });
+// DELETE all from MongoDB
+app.delete("/api/chat-history", async (req, res) => {
+  try {
+    await Chat.deleteMany({});
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// DELETE by id
-app.delete("/api/chat-history/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const arr = readDb();
-  const next = arr.filter((x) => x.id !== id);
-  writeDb(next);
-  res.json({ ok: true });
+// DELETE by id from MongoDB
+app.delete("/api/chat-history/:id", async (req, res) => {
+  try {
+    const result = await Chat.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ error: "Chat not found" });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // User Management API Endpoints
