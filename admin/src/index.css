@@ -39,6 +39,9 @@ body {
   z-index: 50;
   display: flex;
   flex-direction: column;
+  /* Solid background — never transparent */
+  background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%) !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
 }
 
 /* When sidebarOpen=true, transform is set to translateX(0) via inline style in Sidebar.js */
