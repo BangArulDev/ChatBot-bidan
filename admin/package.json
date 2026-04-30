@@ -1,8 +1,11 @@
 {
-  "name": "bidan-sinta-admin",
+  "name": "bidan-nisa-admin",
   "version": "1.0.0",
-  "description": "Admin Panel untuk Chatbot Bidan Sinta",
+  "description": "Admin Panel untuk Chatbot Bidan Nisa",
   "main": "index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "set \"SKIP_PREFLIGHT_CHECK=true\" && react-scripts start",
     "build": "react-scripts build",
@@ -24,7 +27,8 @@
     "react": "*",
     "react-dom": "*",
     "react-router-dom": "*",
-    "recharts": "*"
+    "recharts": "*",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "*",

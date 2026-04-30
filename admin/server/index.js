@@ -266,6 +266,61 @@ app.delete("/api/users/:id", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
+// ─── Health Check Endpoint ─────────────────────────────────────────────────
+// Used by self-ping and external monitors (e.g. UptimeRobot)
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    service: "Bidan Nisa API",
+  });
+});
+
+// ─── Self-Ping Keep-Alive ──────────────────────────────────────────────────
+// Render free tier spins down after 15 min of inactivity.
+// This pings the server's own /health endpoint every 14 minutes to prevent that.
+async function startKeepAlive() {
+  const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
+  if (!RENDER_URL) {
+    console.log("RENDER_EXTERNAL_URL not set — self-ping disabled (local mode).");
+    return;
+  }
+
+  // Use built-in fetch (Node 18+) or fall back to node-fetch
+  let fetchFn = global.fetch;
+  if (!fetchFn) {
+    try {
+      const { default: nodeFetch } = await import("node-fetch");
+      fetchFn = nodeFetch;
+    } catch {
+      console.error("[Keep-Alive] fetch not available. Install node-fetch.");
+      return;
+    }
+  }
+
+  const PING_INTERVAL_MS = 14 * 60 * 1000; // 14 minutes
+
+  const ping = async () => {
+    try {
+      const url = `${RENDER_URL}/health`;
+      const res = await fetchFn(url, { signal: AbortSignal.timeout(10000) });
+      const data = await res.json();
+      console.log(`[Keep-Alive] ✅ Pinged → status: ${data.status}, uptime: ${Math.floor(data.uptime)}s`);
+    } catch (err) {
+      console.error("[Keep-Alive] ❌ Ping failed:", err.message);
+    }
+  };
+
+  // Ping once immediately after startup, then repeat
+  setTimeout(ping, 5000);
+  setInterval(ping, PING_INTERVAL_MS);
+
+  console.log(`[Keep-Alive] 🟢 Self-ping aktif — setiap 14 menit ke ${RENDER_URL}/health`);
+}
+
 app.listen(PORT, () => {
   console.log(`Chat history server listening on port ${PORT}`);
+  startKeepAlive();
 });
