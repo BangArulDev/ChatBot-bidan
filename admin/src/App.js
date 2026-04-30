@@ -20,47 +20,33 @@ function App() {
               path="/*"
               element={
                 <div style={{ display: "flex", height: "100vh", overflow: "hidden", position: "relative" }}>
-                  {/* Mobile overlay */}
-                  {sidebarOpen && (
-                    <div
-                      onClick={() => setSidebarOpen(false)}
-                      style={{
-                        position: "fixed",
-                        inset: 0,
-                        background: "rgba(0,0,0,0.5)",
-                        zIndex: 40,
-                        display: "none",
-                      }}
-                      className="mobile-overlay"
-                    />
-                  )}
 
                   <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-                  <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minWidth: 0 }}>
-                    {/* Mobile top bar */}
+                  {/* Main content area */}
+                  <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", minWidth: 0, display: "flex", flexDirection: "column" }}>
+
+                    {/* Mobile top bar — always rendered, hidden on desktop via CSS */}
                     <div
                       className="mobile-topbar"
                       style={{
-                        display: "none",
                         alignItems: "center",
                         gap: "12px",
                         padding: "12px 16px",
                         background: "#0f172a",
                         borderBottom: "1px solid rgba(255,255,255,0.06)",
-                        position: "sticky",
-                        top: 0,
+                        flexShrink: 0,
                         zIndex: 30,
                       }}
                     >
                       <button
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                        onClick={() => setSidebarOpen(true)}
                         style={{
                           width: "36px",
                           height: "36px",
                           borderRadius: "8px",
-                          background: "rgba(255,255,255,0.08)",
-                          border: "1px solid rgba(255,255,255,0.12)",
+                          background: "rgba(255,255,255,0.1)",
+                          border: "1px solid rgba(255,255,255,0.15)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -68,10 +54,8 @@ function App() {
                           flexShrink: 0,
                         }}
                       >
-                        <svg width="18" height="18" fill="none" stroke="white" strokeWidth="2">
-                          <line x1="2" y1="5" x2="16" y2="5" />
-                          <line x1="2" y1="9" x2="16" y2="9" />
-                          <line x1="2" y1="13" x2="16" y2="13" />
+                        <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+                          <path d="M1 1H17M1 7H17M1 13H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
                         </svg>
                       </button>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -84,7 +68,7 @@ function App() {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            fontSize: "12px",
+                            fontSize: "14px",
                           }}
                         >
                           ❤️
@@ -95,11 +79,13 @@ function App() {
                       </div>
                     </div>
 
-                    <Routes>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/chat-history" element={<ChatHistory />} />
-                      <Route path="/users" element={<Users />} />
-                    </Routes>
+                    <div style={{ flex: 1, overflowY: "auto" }}>
+                      <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/chat-history" element={<ChatHistory />} />
+                        <Route path="/users" element={<Users />} />
+                      </Routes>
+                    </div>
                   </div>
                 </div>
               }

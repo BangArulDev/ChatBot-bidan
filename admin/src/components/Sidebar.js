@@ -33,7 +33,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* Dark overlay — only on mobile when sidebar is open */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
@@ -41,28 +41,21 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
             position: "fixed",
             inset: 0,
             background: "rgba(0,0,0,0.55)",
-            zIndex: 40,
+            zIndex: 49,
           }}
           className="sidebar-overlay"
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar panel */}
       <div
         className="admin-sidebar"
         style={{
-          width: "260px",
-          minHeight: "100vh",
-          background: "linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)",
-          borderRight: "1px solid rgba(255,255,255,0.06)",
-          flexShrink: 0,
-          display: "flex",
-          flexDirection: "column",
-          zIndex: 50,
-          transition: "transform 0.3s ease",
+          /* Mobile: slide in/out via transform */
+          transform: sidebarOpen ? "translateX(0)" : undefined,
         }}
       >
-        {/* Logo Area */}
+        {/* Logo + close button */}
         <div style={{ padding: "20px 20px 16px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -101,7 +94,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               </div>
             </div>
 
-            {/* Close button (mobile only) */}
+            {/* Close button — only visible on mobile */}
             <button
               onClick={() => setSidebarOpen && setSidebarOpen(false)}
               className="sidebar-close-btn"

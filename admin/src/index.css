@@ -27,43 +27,47 @@ body {
    MOBILE RESPONSIVE - Core Layout
    ========================================= */
 
-/* Sidebar: desktop always visible, mobile hidden by default */
+/* Mobile first: sidebar fixed, hidden off-screen to the left */
 .admin-sidebar {
-  position: fixed;
+  position: fixed !important;
   top: 0;
   left: 0;
   height: 100vh;
+  width: 260px;
   transform: translateX(-100%);
+  transition: transform 0.3s ease;
   z-index: 50;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Close button hidden on desktop, show on mobile */
+/* When sidebarOpen=true, transform is set to translateX(0) via inline style in Sidebar.js */
+
+/* Close button visible on mobile */
 .sidebar-close-btn {
   display: flex !important;
 }
 
-/* Mobile topbar visible */
+/* Mobile topbar: shown on mobile */
 .mobile-topbar {
   display: flex !important;
 }
 
-/* Show sidebar when open on mobile */
-.sidebar-open .admin-sidebar {
-  transform: translateX(0) !important;
-}
-
-/* Desktop: always show sidebar, hide mobile topbar */
+/* Desktop (>=768px): sidebar always visible, not fixed */
 @media (min-width: 768px) {
   .admin-sidebar {
     position: relative !important;
     transform: none !important;
-    flex-shrink: 0 !important;
+    height: auto;
+    min-height: 100vh;
+    flex-shrink: 0;
   }
 
   .sidebar-close-btn {
     display: none !important;
   }
 
+  /* Hide mobile topbar on desktop */
   .mobile-topbar {
     display: none !important;
   }
