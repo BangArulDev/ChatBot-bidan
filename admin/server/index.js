@@ -63,6 +63,55 @@ app.get("/api/chat-history", async (req, res) => {
   }
 });
 
+// GET dashboard stats
+app.get("/api/stats", async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalChats = await Chat.countDocuments();
+
+    // Unique users who chatted (by userId)
+    const uniqueChatUsers = await Chat.distinct("userId");
+
+    // Activity per day (last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const activityRaw = await Chat.aggregate([
+      { $match: { createdAt: { $gte: sevenDaysAgo }, sender: "user" } },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Makassar" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Build last 7 days with 0 as default
+    const activityByDay = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      const label = new Intl.DateTimeFormat("id-ID", { weekday: "short", day: "numeric" }).format(d);
+      const found = activityRaw.find((a) => a._id === key);
+      activityByDay.push({ date: key, label, count: found ? found.count : 0 });
+    }
+
+    res.json({
+      totalUsers,
+      totalChats,
+      uniqueChatUsers: uniqueChatUsers.filter((u) => u !== "anonymous").length,
+      activityByDay,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // POST new message to MongoDB
 app.post("/api/chat-history", async (req, res) => {
   const { sender, text, time, userId, userName } = req.body;

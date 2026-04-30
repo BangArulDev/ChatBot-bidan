@@ -3,9 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import ChatHistory from "./pages/ChatHistory";
-import BotResponses from "./pages/BotResponses";
-import Analytics from "./pages/Analytics";
-import Settings from "./pages/Settings";
 import Users from "./pages/Users";
 import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
@@ -27,9 +24,6 @@ function App() {
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/chat-history" element={<ChatHistory />} />
                       <Route path="/users" element={<Users />} />
-                      <Route path="/bot-responses" element={<BotResponses />} />
-                      <Route path="/analytics" element={<Analytics />} />
-                      <Route path="/settings" element={<Settings />} />
                     </Routes>
                   </div>
                 </div>

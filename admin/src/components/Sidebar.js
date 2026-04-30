@@ -3,9 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
   ChatBubbleLeftRightIcon,
-  CogIcon,
-  ChartBarIcon,
-  AdjustmentsHorizontalIcon,
   UsersIcon,
   ArrowRightOnRectangleIcon,
   HeartIcon,
@@ -15,9 +12,6 @@ const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
   { name: "Riwayat Chat", href: "/chat-history", icon: ChatBubbleLeftRightIcon },
   { name: "Pengguna", href: "/users", icon: UsersIcon },
-  { name: "Respons Bot", href: "/bot-responses", icon: CogIcon },
-  { name: "Analitik", href: "/analytics", icon: ChartBarIcon },
-  { name: "Pengaturan", href: "/settings", icon: AdjustmentsHorizontalIcon },
 ];
 
 export default function Sidebar() {
@@ -157,7 +151,6 @@ export default function Sidebar() {
                     ? "1px solid rgba(236,72,153,0.25)"
                     : "1px solid transparent",
                   transition: "all 0.2s ease",
-                  position: "relative",
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
@@ -178,7 +171,6 @@ export default function Sidebar() {
                     height: "18px",
                     color: isActive ? "#f472b6" : "rgba(255,255,255,0.45)",
                     flexShrink: 0,
-                    transition: "color 0.2s",
                   }}
                 />
                 <span
@@ -186,7 +178,6 @@ export default function Sidebar() {
                     fontSize: "14px",
                     fontWeight: isActive ? "600" : "400",
                     color: isActive ? "#f9a8d4" : "rgba(255,255,255,0.6)",
-                    transition: "color 0.2s",
                   }}
                 >
                   {item.name}
@@ -275,12 +266,8 @@ export default function Sidebar() {
               transition: "all 0.2s",
               flexShrink: 0,
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(239,68,68,0.25)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(239,68,68,0.1)";
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.25)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; }}
           >
             <ArrowRightOnRectangleIcon
               style={{ width: "15px", height: "15px", color: "#f87171" }}
