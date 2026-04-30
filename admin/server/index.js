@@ -72,17 +72,17 @@ app.get("/api/stats", async (req, res) => {
     // Unique users who chatted (by userId)
     const uniqueChatUsers = await Chat.distinct("userId");
 
-    // Activity per day (last 7 days)
+    // Activity per day (last 7 days) - use UTC consistently
     const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
+    sevenDaysAgo.setUTCDate(sevenDaysAgo.getUTCDate() - 6);
+    sevenDaysAgo.setUTCHours(0, 0, 0, 0);
 
     const activityRaw = await Chat.aggregate([
       { $match: { createdAt: { $gte: sevenDaysAgo }, sender: "user" } },
       {
         $group: {
           _id: {
-            $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Makassar" },
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
           },
           count: { $sum: 1 },
         },
@@ -90,13 +90,18 @@ app.get("/api/stats", async (req, res) => {
       { $sort: { _id: 1 } },
     ]);
 
-    // Build last 7 days with 0 as default
+    // Build last 7 days with 0 as default using UTC dates
     const activityByDay = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
-      d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
-      const label = new Intl.DateTimeFormat("id-ID", { weekday: "short", day: "numeric" }).format(d);
+      d.setUTCDate(d.getUTCDate() - i);
+      const key = d.toISOString().slice(0, 10); // UTC date key e.g. "2026-04-30"
+      const label = new Intl.DateTimeFormat("id-ID", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        timeZone: "Asia/Jakarta",
+      }).format(d);
       const found = activityRaw.find((a) => a._id === key);
       activityByDay.push({ date: key, label, count: found ? found.count : 0 });
     }
