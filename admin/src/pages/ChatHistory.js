@@ -142,19 +142,19 @@ export default function ChatHistory() {
   const botMessages = history.filter((h) => h.sender === "bot").length;
 
   return (
-    <div style={{ padding: "28px 32px", background: "#f8fafc", minHeight: "100vh" }}>
+    <div className="page-container">
       {/* Header */}
-      <div style={{ marginBottom: "28px" }}>
-        <h1 style={{ fontSize: "24px", fontWeight: "700", color: "#0f172a", margin: 0, letterSpacing: "-0.3px" }}>
+      <div style={{ marginBottom: "20px" }}>
+        <h1 style={{ fontSize: "22px", fontWeight: "700", color: "#0f172a", margin: 0, letterSpacing: "-0.3px" }}>
           Riwayat Chat
         </h1>
-        <p style={{ fontSize: "14px", color: "#64748b", margin: "4px 0 0" }}>
+        <p style={{ fontSize: "13px", color: "#64748b", margin: "4px 0 0" }}>
           Monitor percakapan pengguna dengan Bidan Nisa
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "24px" }}>
+      <div className="stats-grid">
         {[
           { label: "Total Pengguna", value: totalUsers, color: "#ec4899", icon: "👥" },
           { label: "Total Pesan", value: totalMessages, color: "#3b82f6", icon: "💬" },
@@ -199,14 +199,8 @@ export default function ChatHistory() {
       >
         {/* Toolbar */}
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "16px 20px",
-            borderBottom: "1px solid #f1f5f9",
-            gap: "12px",
-          }}
+          className="toolbar"
+          style={{ gap: "10px" }}
         >
           {/* Search */}
           <div style={{ position: "relative", flex: 1, maxWidth: "320px" }}>
@@ -243,7 +237,7 @@ export default function ChatHistory() {
             />
           </div>
 
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div className="toolbar-actions">
             <button
               onClick={fetchHistory}
               disabled={loading}

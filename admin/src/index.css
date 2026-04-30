@@ -6,6 +6,7 @@
 
 * {
   font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
 }
 
 :root {
@@ -18,9 +19,59 @@
 
 body {
   background-color: #f1f5f9;
+  margin: 0;
+  padding: 0;
 }
 
-/* Sidebar Animations */
+/* =========================================
+   MOBILE RESPONSIVE - Core Layout
+   ========================================= */
+
+/* Sidebar: desktop always visible, mobile hidden by default */
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  transform: translateX(-100%);
+  z-index: 50;
+}
+
+/* Close button hidden on desktop, show on mobile */
+.sidebar-close-btn {
+  display: flex !important;
+}
+
+/* Mobile topbar visible */
+.mobile-topbar {
+  display: flex !important;
+}
+
+/* Show sidebar when open on mobile */
+.sidebar-open .admin-sidebar {
+  transform: translateX(0) !important;
+}
+
+/* Desktop: always show sidebar, hide mobile topbar */
+@media (min-width: 768px) {
+  .admin-sidebar {
+    position: relative !important;
+    transform: none !important;
+    flex-shrink: 0 !important;
+  }
+
+  .sidebar-close-btn {
+    display: none !important;
+  }
+
+  .mobile-topbar {
+    display: none !important;
+  }
+}
+
+/* =========================================
+   Sidebar Animations
+   ========================================= */
 .nav-item {
   position: relative;
   transition: all 0.2s ease;
@@ -44,7 +95,9 @@ body {
   opacity: 1;
 }
 
-/* Stat Card Hover */
+/* =========================================
+   Stat Cards
+   ========================================= */
 .stat-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -54,14 +107,100 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* Table Row Hover */
+/* =========================================
+   Dashboard Grid - Responsive
+   ========================================= */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 480px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* =========================================
+   Page Container - Responsive Padding
+   ========================================= */
+.page-container {
+  padding: 20px 16px;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding: 28px 32px;
+  }
+}
+
+/* =========================================
+   Table - Horizontal Scroll on Mobile
+   ========================================= */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* =========================================
+   Toolbar - Stack on Mobile
+   ========================================= */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* =========================================
+   Activity Chart - Responsive height
+   ========================================= */
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 140px;
+}
+
+@media (min-width: 768px) {
+  .chart-bars {
+    gap: 12px;
+    height: 160px;
+  }
+}
+
+/* =========================================
+   Table Row Hover
+   ========================================= */
 .table-row {
   transition: background-color 0.15s ease;
 }
 
-/* Custom Scrollbar */
+/* =========================================
+   Custom Scrollbar
+   ========================================= */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
@@ -74,7 +213,9 @@ body {
   background: #94a3b8;
 }
 
-/* Badge pulse animation */
+/* =========================================
+   Pulse animation
+   ========================================= */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -84,7 +225,9 @@ body {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
-/* Gradient text */
+/* =========================================
+   Gradient text
+   ========================================= */
 .gradient-text {
   background: linear-gradient(135deg, #ec4899, #a855f7);
   -webkit-background-clip: text;
