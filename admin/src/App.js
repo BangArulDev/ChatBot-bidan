@@ -6,6 +6,7 @@ import ChatHistory from "./pages/ChatHistory";
 import BotResponses from "./pages/BotResponses";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
+import Users from "./pages/Users";
 import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -13,18 +14,19 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="h-screen bg-gray-100">
+        <div style={{ height: "100vh", background: "#f8fafc" }}>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route
               path="/*"
               element={
-                <div className="flex h-screen">
+                <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
                   <Sidebar />
-                  <div className="flex-1 overflow-auto">
+                  <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/chat-history" element={<ChatHistory />} />
+                      <Route path="/users" element={<Users />} />
                       <Route path="/bot-responses" element={<BotResponses />} />
                       <Route path="/analytics" element={<Analytics />} />
                       <Route path="/settings" element={<Settings />} />

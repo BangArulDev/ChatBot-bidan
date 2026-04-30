@@ -1,20 +1,20 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
   ChatBubbleLeftRightIcon,
   CogIcon,
   ChartBarIcon,
   AdjustmentsHorizontalIcon,
+  UsersIcon,
+  ArrowRightOnRectangleIcon,
+  HeartIcon,
 } from "@heroicons/react/24/outline";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
-  {
-    name: "Riwayat Chat",
-    href: "/chat-history",
-    icon: ChatBubbleLeftRightIcon,
-  },
+  { name: "Riwayat Chat", href: "/chat-history", icon: ChatBubbleLeftRightIcon },
+  { name: "Pengguna", href: "/users", icon: UsersIcon },
   { name: "Respons Bot", href: "/bot-responses", icon: CogIcon },
   { name: "Analitik", href: "/analytics", icon: ChartBarIcon },
   { name: "Pengaturan", href: "/settings", icon: AdjustmentsHorizontalIcon },
@@ -22,66 +22,270 @@ const navigation = [
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col">
-      <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
-        <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-          <div className="flex flex-shrink-0 items-center px-4">
-            <div className="h-8 w-8 rounded-full bg-pink-100 flex items-center justify-center">
-              <span className="text-pink-600 font-bold text-xl">B</span>
-            </div>
-            <span className="ml-3 text-lg font-semibold text-gray-900">
-              Bidan Sinta
-            </span>
+    <div
+      className="hidden md:flex md:flex-col"
+      style={{
+        width: "260px",
+        minHeight: "100vh",
+        background: "linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)",
+        borderRight: "1px solid rgba(255,255,255,0.06)",
+        flexShrink: 0,
+      }}
+    >
+      {/* Logo Area */}
+      <div style={{ padding: "28px 20px 20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "12px",
+              background: "linear-gradient(135deg, #ec4899, #a855f7)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 15px rgba(236,72,153,0.4)",
+              flexShrink: 0,
+            }}
+          >
+            <HeartIcon style={{ width: "20px", height: "20px", color: "white" }} />
           </div>
-          <nav className="mt-5 flex-1 space-y-1 bg-white px-2">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                    isActive
-                      ? "bg-pink-50 text-pink-600"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-                >
-                  <item.icon
-                    className={`mr-3 h-6 w-6 flex-shrink-0 ${
-                      isActive
-                        ? "text-pink-600"
-                        : "text-gray-400 group-hover:text-gray-500"
-                    }`}
-                    aria-hidden="true"
-                  />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
+          <div>
+            <p
+              style={{
+                fontSize: "16px",
+                fontWeight: "700",
+                background: "linear-gradient(135deg, #f9a8d4, #e879f9)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                lineHeight: 1.2,
+                margin: 0,
+              }}
+            >
+              Bidan Nisa
+            </p>
+            <p
+              style={{
+                fontSize: "11px",
+                color: "rgba(255,255,255,0.4)",
+                margin: 0,
+                letterSpacing: "0.5px",
+                textTransform: "uppercase",
+              }}
+            >
+              Admin Panel
+            </p>
+          </div>
         </div>
-        <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
-          <div className="group block w-full flex-shrink-0">
-            <div className="flex items-center">
-              <div className="inline-block h-9 w-9 rounded-full">
-                <img
-                  className="h-9 w-9 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
+
+        {/* Online indicator */}
+        <div
+          style={{
+            marginTop: "16px",
+            padding: "8px 12px",
+            background: "rgba(16,185,129,0.1)",
+            borderRadius: "8px",
+            border: "1px solid rgba(16,185,129,0.2)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <div
+            className="pulse-dot"
+            style={{
+              width: "7px",
+              height: "7px",
+              borderRadius: "50%",
+              background: "#10b981",
+              flexShrink: 0,
+            }}
+          />
+          <span style={{ fontSize: "12px", color: "#34d399", fontWeight: "500" }}>
+            Sistem Aktif
+          </span>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div style={{ height: "1px", background: "rgba(255,255,255,0.06)", margin: "0 20px" }} />
+
+      {/* Navigation */}
+      <nav style={{ flex: 1, padding: "16px 12px", overflowY: "auto" }}>
+        <p
+          style={{
+            fontSize: "10px",
+            fontWeight: "600",
+            color: "rgba(255,255,255,0.3)",
+            textTransform: "uppercase",
+            letterSpacing: "1px",
+            padding: "0 8px",
+            marginBottom: "8px",
+          }}
+        >
+          Menu Utama
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+          {navigation.map((item) => {
+            const isActive = location.pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "10px 12px",
+                  borderRadius: "10px",
+                  textDecoration: "none",
+                  background: isActive
+                    ? "linear-gradient(135deg, rgba(236,72,153,0.2), rgba(168,85,247,0.15))"
+                    : "transparent",
+                  border: isActive
+                    ? "1px solid rgba(236,72,153,0.25)"
+                    : "1px solid transparent",
+                  transition: "all 0.2s ease",
+                  position: "relative",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                    e.currentTarget.style.border = "1px solid rgba(255,255,255,0.08)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.border = "1px solid transparent";
+                  }
+                }}
+              >
+                <item.icon
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    color: isActive ? "#f472b6" : "rgba(255,255,255,0.45)",
+                    flexShrink: 0,
+                    transition: "color 0.2s",
+                  }}
                 />
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                  Admin Bidan
-                </p>
-                <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-                  Keluar
-                </p>
-              </div>
-            </div>
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: isActive ? "600" : "400",
+                    color: isActive ? "#f9a8d4" : "rgba(255,255,255,0.6)",
+                    transition: "color 0.2s",
+                  }}
+                >
+                  {item.name}
+                </span>
+                {isActive && (
+                  <div
+                    style={{
+                      marginLeft: "auto",
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      background: "#ec4899",
+                    }}
+                  />
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* Divider */}
+      <div style={{ height: "1px", background: "rgba(255,255,255,0.06)", margin: "0 20px" }} />
+
+      {/* User Profile */}
+      <div style={{ padding: "16px 12px 20px" }}>
+        <div
+          style={{
+            padding: "12px",
+            borderRadius: "12px",
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <div
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "10px",
+              background: "linear-gradient(135deg, #ec4899, #a855f7)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "14px",
+              fontWeight: "700",
+              color: "white",
+              flexShrink: 0,
+            }}
+          >
+            {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
           </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                color: "rgba(255,255,255,0.85)",
+                margin: 0,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {user?.name || "Admin Bidan"}
+            </p>
+            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", margin: 0 }}>
+              Administrator
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            title="Keluar"
+            style={{
+              width: "30px",
+              height: "30px",
+              borderRadius: "8px",
+              background: "rgba(239,68,68,0.1)",
+              border: "1px solid rgba(239,68,68,0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(239,68,68,0.25)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(239,68,68,0.1)";
+            }}
+          >
+            <ArrowRightOnRectangleIcon
+              style={{ width: "15px", height: "15px", color: "#f87171" }}
+            />
+          </button>
         </div>
       </div>
     </div>

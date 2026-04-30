@@ -1,237 +1,430 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { ArrowPathIcon, TrashIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export default function ChatHistory() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
-
   const formatDate = (dateString) => {
     try {
       const date = new Date(dateString);
       return new Intl.DateTimeFormat("id-ID", {
         dateStyle: "medium",
-        timeStyle: "medium",
+        timeStyle: "short",
       }).format(date);
     } catch (e) {
       return dateString;
     }
   };
 
-  useEffect(() => {
-    // try fetch from server API first, fall back to localStorage
-    (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`${API_BASE}/api/chat-history`);
-        if (res.ok) {
-          const arr = await res.json();
-          setHistory(arr.slice().reverse());
-        } else {
-          throw new Error("Failed to fetch from server");
-        }
-      } catch (e) {
-        console.error("Error fetching history:", e);
-        try {
-          const raw = localStorage.getItem("chat_history");
-          const arr = raw ? JSON.parse(raw) : [];
-          setHistory(arr.reverse());
-        } catch (e) {
-          setError("Gagal memuat riwayat chat");
-          setHistory([]);
-        }
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [API_BASE]);
-
-  async function refresh() {
+  const fetchHistory = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
       const res = await fetch(`${API_BASE}/api/chat-history`);
       if (res.ok) {
         const arr = await res.json();
         setHistory(arr.slice().reverse());
-        return;
+      } else {
+        throw new Error("Failed to fetch from server");
       }
-    } catch (e) {}
-
-    try {
-      const raw = localStorage.getItem("chat_history");
-      const arr = raw ? JSON.parse(raw) : [];
-      setHistory(arr.reverse());
     } catch (e) {
-      setHistory([]);
+      try {
+        const raw = localStorage.getItem("chat_history");
+        const arr = raw ? JSON.parse(raw) : [];
+        setHistory(arr.reverse());
+      } catch {
+        setError("Gagal memuat riwayat chat");
+        setHistory([]);
+      }
+    } finally {
+      setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
 
   async function clearAll() {
     if (!window.confirm("Yakin ingin menghapus semua riwayat chat?")) return;
     try {
-      const res = await fetch(`${API_BASE}/api/chat-history`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        setHistory([]);
-        localStorage.removeItem("chat_history");
-        return;
-      }
+      await fetch(`${API_BASE}/api/chat-history`, { method: "DELETE" });
+      setHistory([]);
     } catch (e) {
-      console.error("Error clearing history:", e);
-      alert(
-        "Gagal menghapus riwayat chat dari server. Mencoba hapus dari local storage."
-      );
+      localStorage.removeItem("chat_history");
+      setHistory([]);
     }
-    localStorage.removeItem("chat_history");
-    setHistory([]);
   }
 
   async function deleteItem(id) {
     if (!window.confirm("Hapus pesan ini?")) return;
     try {
-      const res = await fetch(`${API_BASE}/api/chat-history/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        await refresh();
-        return;
-      }
+      await fetch(`${API_BASE}/api/chat-history/${id}`, { method: "DELETE" });
+      await fetchHistory();
     } catch (e) {
-      console.error("Error deleting item:", e);
-      alert(
-        "Gagal menghapus pesan dari server. Mencoba hapus dari local storage."
-      );
-    }
-
-    try {
       const raw = localStorage.getItem("chat_history");
       const arr = raw ? JSON.parse(raw) : [];
-      const next = arr.filter((r) => r.id !== id);
+      const next = arr.filter((r) => r.id !== id && r._id !== id);
       localStorage.setItem("chat_history", JSON.stringify(next));
       setHistory(next.reverse());
-    } catch (e) {
-      await refresh();
     }
   }
 
   async function exportJson() {
-    try {
-      const res = await fetch(`${API_BASE}/api/chat-history`);
-      let arr = history.slice().reverse();
-      if (res.ok) arr = await res.json();
-      const blob = new Blob([JSON.stringify(arr, null, 2)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `chat_history_${new Date().toISOString()}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      return;
-    } catch (e) {
-      // fallback to local
-    }
-
-    const blob = new Blob([JSON.stringify(history.reverse(), null, 2)], {
+    const blob = new Blob([JSON.stringify(history.slice().reverse(), null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `chat_history_${new Date().toISOString()}.json`;
+    a.download = `riwayat_chat_${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
 
+  const totalMessages = history.length;
+  const userMessages = history.filter((h) => h.sender === "user").length;
+  const botMessages = history.filter((h) => h.sender === "bot").length;
+
   return (
-    <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold text-gray-900">Riwayat Chat</h1>
-        <div className="space-x-2">
-          <button
-            onClick={refresh}
-            disabled={loading}
-            className={`px-3 py-1 rounded text-sm ${
-              loading ? "bg-gray-200" : "bg-gray-100 hover:bg-gray-200"
-            }`}
-          >
-            {loading ? "Memuat..." : "Refresh"}
-          </button>
-          <button
-            onClick={exportJson}
-            disabled={loading}
-            className={`px-3 py-1 rounded text-sm ${
-              loading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
-            } text-white`}
-          >
-            Ekspor JSON
-          </button>
-          <button
-            onClick={clearAll}
-            disabled={loading}
-            className={`px-3 py-1 rounded text-sm ${
-              loading ? "bg-red-400" : "bg-red-600 hover:bg-red-700"
-            } text-white`}
-          >
-            Hapus Semua
-          </button>
-        </div>
+    <div style={{ padding: "28px 32px", background: "#f8fafc", minHeight: "100vh" }}>
+      {/* Header */}
+      <div style={{ marginBottom: "28px" }}>
+        <h1
+          style={{
+            fontSize: "24px",
+            fontWeight: "700",
+            color: "#0f172a",
+            margin: 0,
+            letterSpacing: "-0.3px",
+          }}
+        >
+          Riwayat Chat
+        </h1>
+        <p style={{ fontSize: "14px", color: "#64748b", margin: "4px 0 0" }}>
+          Monitor dan kelola percakapan pengguna dengan Bidan Nisa
+        </p>
       </div>
 
-      {loading ? (
-        <div className="text-sm text-gray-500">Memuat riwayat chat...</div>
-      ) : error ? (
-        <div className="text-sm text-red-500">{error}</div>
-      ) : history.length === 0 ? (
-        <div className="text-sm text-gray-500">Belum ada riwayat chat.</div>
-      ) : (
-        <div className="overflow-auto max-h-[60vh] border rounded">
-          <table className="w-full table-auto text-left">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-3 py-2 text-xs text-gray-600">Waktu</th>
-                <th className="px-3 py-2 text-xs text-gray-600">
-                  Nama Pengguna
-                </th>
-                <th className="px-3 py-2 text-xs text-gray-600">Pengirim</th>
-                <th className="px-3 py-2 text-xs text-gray-600">Pesan</th>
-                <th className="px-3 py-2 text-xs text-gray-600">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {history.map((h) => (
-                <tr key={h.id} className="border-t">
-                  <td className="px-3 py-2 align-top text-sm text-gray-700">
-                    {formatDate(h.time)}
-                  </td>
-                  <td className="px-3 py-2 align-top text-sm text-gray-700">
-                    {h.userName ||
-                      h.name ||
-                      (h.sender === "user" ? "Pengguna" : "Bidan Sinta")}
-                  </td>
-                  <td className="px-3 py-2 align-top text-sm text-gray-700">
-                    {h.sender}
-                  </td>
-                  <td className="px-3 py-2 align-top text-sm text-gray-800 whitespace-pre-wrap">
-                    {h.text}
-                  </td>
-                  <td className="px-3 py-2 align-top text-sm">
-                    <button
-                      onClick={() => deleteItem(h.id)}
-                      className="px-2 py-1 text-sm bg-red-500 text-white rounded"
-                    >
-                      Hapus
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Stats Cards */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "16px",
+          marginBottom: "24px",
+        }}
+      >
+        {[
+          { label: "Total Pesan", value: totalMessages, color: "#ec4899", bg: "rgba(236,72,153,0.08)" },
+          { label: "Pesan Pengguna", value: userMessages, color: "#3b82f6", bg: "rgba(59,130,246,0.08)" },
+          { label: "Respons Bot", value: botMessages, color: "#10b981", bg: "rgba(16,185,129,0.08)" },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className="stat-card"
+            style={{
+              background: "white",
+              borderRadius: "14px",
+              padding: "20px",
+              border: "1px solid #e2e8f0",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+            }}
+          >
+            <p style={{ fontSize: "13px", color: "#64748b", margin: "0 0 8px", fontWeight: "500" }}>
+              {stat.label}
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "28px", fontWeight: "700", color: stat.color }}>
+                {loading ? "—" : stat.value}
+              </span>
+              <div
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  background: stat.color,
+                  opacity: 0.5,
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Table Container */}
+      <div
+        style={{
+          background: "white",
+          borderRadius: "16px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+          overflow: "hidden",
+        }}
+      >
+        {/* Table Toolbar */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "18px 24px",
+            borderBottom: "1px solid #f1f5f9",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: loading ? "#f59e0b" : "#10b981",
+              }}
+              className={loading ? "pulse-dot" : ""}
+            />
+            <span style={{ fontSize: "14px", fontWeight: "600", color: "#334155" }}>
+              {loading ? "Memuat data..." : `${totalMessages} pesan`}
+            </span>
+          </div>
+
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              onClick={fetchHistory}
+              disabled={loading}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 14px",
+                borderRadius: "8px",
+                background: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                fontSize: "13px",
+                fontWeight: "500",
+                color: "#475569",
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              <ArrowPathIcon style={{ width: "14px", height: "14px", color: "#64748b" }} />
+              Refresh
+            </button>
+            <button
+              onClick={exportJson}
+              disabled={loading || history.length === 0}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 14px",
+                borderRadius: "8px",
+                background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+                border: "none",
+                fontSize: "13px",
+                fontWeight: "500",
+                color: "white",
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(59,130,246,0.3)",
+              }}
+            >
+              <ArrowDownTrayIcon style={{ width: "14px", height: "14px" }} />
+              Ekspor
+            </button>
+            <button
+              onClick={clearAll}
+              disabled={loading || history.length === 0}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 14px",
+                borderRadius: "8px",
+                background: "linear-gradient(135deg, #ef4444, #dc2626)",
+                border: "none",
+                fontSize: "13px",
+                fontWeight: "500",
+                color: "white",
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(239,68,68,0.25)",
+              }}
+            >
+              <TrashIcon style={{ width: "14px", height: "14px" }} />
+              Hapus Semua
+            </button>
+          </div>
         </div>
-      )}
+
+        {/* Table */}
+        {loading ? (
+          <div style={{ padding: "60px", textAlign: "center" }}>
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                border: "3px solid #f1f5f9",
+                borderTopColor: "#ec4899",
+                animation: "spin 1s linear infinite",
+                margin: "0 auto 16px",
+              }}
+            />
+            <p style={{ color: "#94a3b8", fontSize: "14px" }}>Memuat riwayat chat...</p>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          </div>
+        ) : error ? (
+          <div
+            style={{
+              padding: "48px",
+              textAlign: "center",
+              color: "#ef4444",
+              fontSize: "14px",
+            }}
+          >
+            ⚠️ {error}
+          </div>
+        ) : history.length === 0 ? (
+          <div style={{ padding: "60px", textAlign: "center" }}>
+            <p style={{ fontSize: "32px", margin: "0 0 12px" }}>💬</p>
+            <p style={{ color: "#94a3b8", fontSize: "14px", fontWeight: "500" }}>
+              Belum ada riwayat chat
+            </p>
+          </div>
+        ) : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: "#f8fafc" }}>
+                  {["Waktu", "Nama Pengguna", "Pengirim", "Pesan", "Aksi"].map((col) => (
+                    <th
+                      key={col}
+                      style={{
+                        padding: "12px 20px",
+                        textAlign: "left",
+                        fontSize: "11px",
+                        fontWeight: "700",
+                        color: "#94a3b8",
+                        letterSpacing: "0.8px",
+                        textTransform: "uppercase",
+                        borderBottom: "1px solid #f1f5f9",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((h, idx) => (
+                  <tr
+                    key={h._id || h.id || idx}
+                    className="table-row"
+                    style={{ borderBottom: "1px solid #f8fafc" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "#fdf2f8")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  >
+                    <td
+                      style={{
+                        padding: "14px 20px",
+                        fontSize: "12px",
+                        color: "#64748b",
+                        whiteSpace: "nowrap",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      {formatDate(h.createdAt || h.time)}
+                    </td>
+                    <td
+                      style={{
+                        padding: "14px 20px",
+                        fontSize: "13px",
+                        color: "#475569",
+                        verticalAlign: "top",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {h.userName || h.name || (h.sender === "user" ? "Pengguna" : "Bidan Nisa")}
+                    </td>
+                    <td style={{ padding: "14px 20px", verticalAlign: "top" }}>
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          padding: "3px 10px",
+                          borderRadius: "20px",
+                          fontSize: "11px",
+                          fontWeight: "600",
+                          background:
+                            h.sender === "user"
+                              ? "rgba(59,130,246,0.1)"
+                              : "rgba(236,72,153,0.1)",
+                          color: h.sender === "user" ? "#3b82f6" : "#ec4899",
+                        }}
+                      >
+                        {h.sender === "user" ? "👤 User" : "🤖 Bot"}
+                      </span>
+                    </td>
+                    <td
+                      style={{
+                        padding: "14px 20px",
+                        fontSize: "13px",
+                        color: "#334155",
+                        maxWidth: "400px",
+                        verticalAlign: "top",
+                        lineHeight: "1.5",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {h.text}
+                      </div>
+                    </td>
+                    <td style={{ padding: "14px 20px", verticalAlign: "top" }}>
+                      <button
+                        onClick={() => deleteItem(h._id || h.id)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          padding: "6px 10px",
+                          borderRadius: "7px",
+                          background: "rgba(239,68,68,0.08)",
+                          border: "1px solid rgba(239,68,68,0.15)",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          color: "#ef4444",
+                          cursor: "pointer",
+                          transition: "all 0.15s",
+                          whiteSpace: "nowrap",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "rgba(239,68,68,0.15)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "rgba(239,68,68,0.08)";
+                        }}
+                      >
+                        <TrashIcon style={{ width: "12px", height: "12px" }} />
+                        Hapus
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
