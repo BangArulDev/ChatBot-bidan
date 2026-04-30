@@ -20,30 +20,44 @@ export default function Login() {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
+    const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
     try {
-      // TODO: Replace with actual API call
-      // Simulating API call with timeout
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-      // Successful login simulation
-      // In real implementation, verify credentials with backend
-      if (formData.email && formData.password) {
-        setMessage({
-          type: "success",
-          text: "Login berhasil! Anda akan diarahkan ke halaman chat...",
-        });
+      const data = await response.json();
 
-        // Redirect to chat page after 2 seconds
-        setTimeout(() => {
-          navigate("/chat");
-        }, 2000);
-      } else {
-        throw new Error("Invalid credentials");
+      if (!response.ok) {
+        throw new Error(data.error || "Login gagal");
       }
+
+      // Successful login
+      // Store token and user data
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      setMessage({
+        type: "success",
+        text: "Login berhasil! Anda akan diarahkan ke halaman chat...",
+      });
+
+      // Redirect to chat page after 1.5 seconds
+      setTimeout(() => {
+        navigate("/chat");
+      }, 1500);
     } catch (error) {
       setMessage({
         type: "error",
-        text: "Login gagal. Email atau password salah.",
+        text: error.message || "Login gagal. Email atau password salah.",
       });
     }
   };

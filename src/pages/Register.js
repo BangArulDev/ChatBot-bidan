@@ -32,10 +32,28 @@ export default function Register() {
       return;
     }
 
+    const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
     try {
-      // TODO: Replace with actual API call
-      // Simulating API call with timeout
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          birthDate: formData.birthDate,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registrasi gagal");
+      }
 
       // Successful registration
       setMessage({
@@ -50,7 +68,7 @@ export default function Register() {
     } catch (error) {
       setMessage({
         type: "error",
-        text: "Registrasi gagal. Silakan coba lagi.",
+        text: error.message || "Registrasi gagal. Silakan coba lagi.",
       });
     }
   };
