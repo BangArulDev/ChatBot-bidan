@@ -464,8 +464,8 @@ export default function Chat() {
       {showWelcome && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-40">
           <div className="text-center">
-            <div className="mx-auto mb-4 w-24 h-24 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-3xl">
-              B
+            <div className="mx-auto mb-4 w-24 h-24 rounded-full bg-pink-100 flex items-center justify-center overflow-hidden">
+              <img src="/profil.svg" alt="Bidan Nisa" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-2xl font-bold mb-1">Selamat datang</h1>
             <h2 className="text-lg font-semibold text-pink-600 mb-2">
@@ -509,8 +509,8 @@ export default function Chat() {
                 </svg>
               </button>
 
-              <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-500 font-bold text-xl">
-                B
+              <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center overflow-hidden">
+                <img src="/profil.svg" alt="Bidan Nisa" className="w-full h-full object-cover" />
               </div>
 
               <div>
@@ -582,19 +582,8 @@ export default function Chat() {
           {/* Render messages */}
           {messages.length === 0 && (
             <div className="flex items-start space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 flex-shrink-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                <img src="/profil.svg" alt="Bidan Nisa" className="w-full h-full object-cover" />
               </div>
               <div className="bg-white rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm">
                 <p className="text-sm text-gray-800">
@@ -699,19 +688,8 @@ export default function Chat() {
           {/* Typing indicator */}
           {typing && (
             <div className="flex items-start space-x-2" id="typing-indicator">
-              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 flex-shrink-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                <img src="/profil.svg" alt="Bidan Nisa" className="w-full h-full object-cover" />
               </div>
               <div className="bg-white rounded-lg rounded-tl-none p-3 max-w-xs shadow-sm">
                 <div className="flex space-x-1">
