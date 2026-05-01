@@ -20,6 +20,23 @@ export default function Register() {
     });
   };
 
+  // Helper: safely parse JSON — handles empty body & HTML error pages
+  const safeJson = async (response) => {
+    const text = await response.text();
+    if (!text || text.trim() === "") {
+      throw new Error("Server tidak merespons. Mungkin server sedang tidak aktif, coba beberapa saat lagi.");
+    }
+    try {
+      return JSON.parse(text);
+    } catch {
+      // Server returned non-JSON (e.g. HTML error page)
+      if (!response.ok) {
+        throw new Error(`Server error (${response.status}): Silakan coba lagi.`);
+      }
+      throw new Error("Respons server tidak valid. Silakan coba lagi.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
@@ -33,6 +50,14 @@ export default function Register() {
     }
 
     const API_BASE = process.env.REACT_APP_API_URL || "";
+
+    if (!API_BASE) {
+      setMessage({
+        type: "error",
+        text: "Konfigurasi server belum lengkap. Hubungi administrator.",
+      });
+      return;
+    }
 
     try {
       const response = await fetch(`${API_BASE}/api/auth/register`, {
@@ -49,7 +74,7 @@ export default function Register() {
         }),
       });
 
-      const data = await response.json();
+      const data = await safeJson(response);
 
       if (!response.ok) {
         throw new Error(data.error || "Registrasi gagal");
