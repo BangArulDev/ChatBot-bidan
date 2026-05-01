@@ -107,7 +107,7 @@ export default function Chat() {
     // try to send to server (admin API). If REACT_APP_API_URL is set, use it; else assume same origin and /api
     (async () => {
       try {
-        const base = process.env.REACT_APP_API_URL || "http://localhost:5000";
+        const base = process.env.REACT_APP_API_URL || "";
         // Get user info from localStorage (set during login)
         const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
         const userId = storedUser?.id || localStorage.getItem("userId") || "anonymous";

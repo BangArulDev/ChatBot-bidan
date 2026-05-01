@@ -20,7 +20,7 @@ export default function Login() {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
-    const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const API_BASE = process.env.REACT_APP_API_URL || "";
 
     try {
       const response = await fetch(`${API_BASE}/api/auth/login`, {
